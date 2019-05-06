@@ -9,6 +9,7 @@
   "dependencies": {
     "react": "16.8.3",
     "react-native": "0.59.5",
+    "react-native-keyevent": "^0.1.1",
     "react-native-video": "^4.4.1",
     "react-native-video-controls": "^2.2.3"
   },
