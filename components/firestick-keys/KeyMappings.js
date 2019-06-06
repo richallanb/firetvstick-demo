@@ -1,50 +1,29 @@
 export default {
   onReverse: {
-    keyCode: 89
-  },
-  onFastReverse: {
-    keyCode: 89,
-    holdDown: true
+    keyCode: 'rewind'
   },
   onPlay: {
-    keyCode: 85
+    keyCode: 'playPause'
   },
   onForward: {
-    keyCode: 90
-  },
-  onFastForward: {
-    keyCode: 90,
-    holdDown: true
+    keyCode: 'fastForward'
   },
   onMenu: {
-    keyCode: 82
+    keyCode: 'menu'
   },
   onUp: {
-    keyCode: 19
+    keyCode: 'up'
+  },
+  onSelect: {
+    keyCode: 'select'
   },
   onRight: {
-    keyCode: 22
+    keyCode: 'right'
   },
   onLeft: {
-    keyCode: 21
+    keyCode: 'left'
   },
   onDown: {
-    keyCode: 20
-  },
-  onUpHold: {
-    keyCode: 19,
-    holdDown: true
-  },
-  onRightHold: {
-    keyCode: 22,
-    holdDown: true
-  },
-  onLeftHold: {
-    keyCode: 21,
-    holdDown: true
-  },
-  onDownHold: {
-    keyCode: 20,
-    holdDown: true
+    keyCode: 'down'
   }
 };

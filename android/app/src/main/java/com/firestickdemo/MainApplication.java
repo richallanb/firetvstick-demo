@@ -3,12 +3,15 @@ package com.firestickdemo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.swmansion.rnscreens.RNScreensPackage;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.psykar.cookiemanager.CookieManagerPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.github.kevinejohn.keyevent.KeyEventPackage;  // <--- import
+// import com.github.kevinejohn.keyevent.KeyEventPackage;  // <--- import
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +28,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-          new KeyEventPackage(),
+            new RNScreensPackage(),
+            new RNGestureHandlerPackage(),
+            new CookieManagerPackage(),
+          // new KeyEventPackage(),
           new ReactVideoPackage()
       );
     }

@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 import com.android.build.OutputFile
 
@@ -138,7 +139,10 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-keyevent')
+    implementation project(':react-native-screens')
+    implementation project(':react-native-gesture-handler')
+    implementation project(':react-native-cookies')
+    // implementation project(':react-native-keyevent')
     implementation project(':react-native-video')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"

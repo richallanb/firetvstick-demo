@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { View, DeviceEventEmitter } from "react-native";
+import { View } from "react-native";
+import TVEventHandler from "TVEventHandler";
 import KeyMappings from "./KeyMappings";
 
 function throttle(callback, wait, immediate = false) {
@@ -25,11 +26,9 @@ function throttle(callback, wait, immediate = false) {
 }
 
 export default class FirestickKeys extends Component {
-  constructor() {
-    super();
-  }
+  listenerKeyUp: function;
 
-  buildProps() {
+  buildProps = () => {
     return Object.keys(this.props).reduce((mappings, propName) => {
       if (KeyMappings[propName] && typeof this.props[propName] === "function") {
         const key = KeyMappings[propName].holdDown
@@ -39,63 +38,68 @@ export default class FirestickKeys extends Component {
         return {
           ...mappings,
           [key]: {
-            action: this.props[propName],
-            holdDown: KeyMappings[propName].holdDown
+            action: this.props[propName]
+            // holdDown: KeyMappings[propName].holdDown
           }
         };
       }
       return mappings;
     }, {});
-  }
+  };
 
   render() {
     return <View />;
   }
 
-  componentDidMount() {
+  _enableEventHandler = () => {
     const mappedProps = this.buildProps();
-    let throttledKeyDown;
-    this.listenerKeyUp = DeviceEventEmitter.addListener(
-      "onKeyUp",
-      ({ keyCode = 0 }) => {
-        console.log(keyCode);
-        if (mappedProps && mappedProps[keyCode]) {
-          mappedProps[keyCode].action();
-        }
-        if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
-          throttledKeyDown = undefined;
-        }
+    // let throttledKeyDown;
+    this.listenerKeyUp = new TVEventHandler();
+    this.listenerKeyUp.enable(this, (cmp, { eventType: keyCode }) => {
+      console.log(keyCode);
+      if (mappedProps && mappedProps[keyCode]) {
+        mappedProps[keyCode].action();
       }
-    );
-    this.listenerKeyDown = DeviceEventEmitter.addListener(
-      "onKeyDown",
-      ({ keyCode = 0 }) => {
-        const heldKeyCode = `${keyCode}_hold`;
-        if (mappedProps && mappedProps[heldKeyCode]) {
-          if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
-            throttledKeyDown.action();
-          } else {
-            throttledKeyDown = {
-              keyCode,
-              action: throttle(
-                mappedProps[heldKeyCode].action,
-                this.props.keyPressTimeOut,
-                true
-              )
-            };
-          }
-        }
-      }
-    );
+      // if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
+      //   throttledKeyDown = undefined;
+      // }
+    });
+    // this.listenerKeyDown = DeviceEventEmitter.addListener(
+    //   "onKeyDown",
+    //   ({ keyCode = 0 }) => {
+    //     const heldKeyCode = `${keyCode}_hold`;
+    //     if (mappedProps && mappedProps[heldKeyCode]) {
+    //       if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
+    //         throttledKeyDown.action();
+    //       } else {
+    //         throttledKeyDown = {
+    //           keyCode,
+    //           action: throttle(
+    //             mappedProps[heldKeyCode].action,
+    //             this.props.keyPressTimeOut,
+    //             true
+    //           )
+    //         };
+    //       }
+    //     }
+    //   }
+    // );
+  };
+
+  _disableEventHandler = () => {
+    if (this.listenerKeyUp) {
+      this.listenerKeyUp.disable();
+      delete this.listenerKeyUp;
+    }
+  };
+
+  componentDidMount() {
+    console.log("eventHandler");
+    this._enableEventHandler();
   }
 
   componentWillUnmount() {
-    if (this.listenerKeyUp) {
-      this.listenerKeyUp.remove();
-    }
-    if (this.listenerKeyDown) {
-      this.listenerKeyDown.remove();
-    }
+    this._disableEventHandler();
   }
 }
 
