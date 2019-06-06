@@ -6,28 +6,24 @@ import {
   TouchableNativeFeedback,
   StyleSheet
 } from "react-native";
-import styled from 'styled-components'
-
-const ShowContainer = styled.View`
-  border-width: 1;
-  border-color: #ddd;
-  elevation: 5;
-  margin: 5px 5px;
-  background-color: rgb(80, 88, 88);
-  align-items: center;
-  justify-content: center;
-  padding: 8px 8px;
-`
 
 export default class ShowItem extends Component {
   render() {
-    const { onPress, imageSource, title } = this.props;
+    const { onPress, imageSource, title, onFocus, focused } = this.props;
+    const onFocusStyleOverrides = focused
+      ? {
+          elevation: 5,
+          backgroundColor: "rgb(80, 88, 88)",
+          borderColor: "rgba(255,255,255,0.25)",
+          borderWidth: 1
+        }
+      : {};
     return (
-      <TouchableNativeFeedback onPress={onPress}>
-        <ShowContainer>
+      <TouchableNativeFeedback onPress={onPress} onFocus={onFocus}>
+        <View style={{ ...styles.container, ...onFocusStyleOverrides }}>
           <Image style={styles.image} source={{ uri: imageSource }} />
-          <Text>{title}</Text>
-        </ShowContainer>
+          <Text numberOfLines={1} style={styles.text}>{title}</Text>
+        </View>
       </TouchableNativeFeedback>
     );
   }
@@ -35,15 +31,14 @@ export default class ShowItem extends Component {
 
 ShowItem.defaultProps = {
   onPress: () => {},
+  onFocus: () => {},
+  selected: false,
   title: "None",
   imageSource: "https://via.placeholder.com/240x360.png"
 };
 
-
-
 const styles = StyleSheet.create({
   container: {
-    flex: 0,
     paddingTop: 8,
     paddingBottom: 8,
     paddingLeft: 8,
@@ -52,20 +47,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderRadius: 0,
-    borderColor: '#000',
-    borderBottomWidth: 0,
-    shadowColor: '#000',
-    backgroundColor: "rgb(80, 88, 88)",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 5,
+    borderColor: "rgba(0,0,0,0)",
+    elevation: 0,
     marginLeft: 5,
     marginRight: 5,
     marginTop: 5,
+    marginBottom: 5,
+    width: 200,
+    height: 248
   },
   image: {
     width: 120,
     height: 180
+  },
+  text: {
+    color: 'white',
+    marginTop: 8
   }
 });

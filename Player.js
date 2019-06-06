@@ -20,7 +20,6 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import VideoPlayer from "react-native-video";
 import { FirestickKeys } from "./components/firestick-keys";
-import test from "./crawler/test";
 import {
   createSwitchNavigator,
   createAppContainer,
@@ -82,12 +81,17 @@ export default class Player extends Component<Props> {
   };
 
   render() {
+    const { navigation } = this.props;
+    const uri = navigation.getParam(
+      "uri",
+      "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4"
+    );
+
     return (
       <View style={styles.container} hasTVPreferredFocus={true}>
         <VideoPlayer
           source={{
-            uri:
-              "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4"
+            uri
           }} // Can be a URL or a local file.
           style={styles.backgroundVideo}
           paused={this.state.paused}
@@ -109,7 +113,6 @@ export default class Player extends Component<Props> {
               ...displayobj,
               autoDismiss: !this.state.paused
             });
-            test();
           }}
           // onLeftHold={() => {
           //   this.setState({
