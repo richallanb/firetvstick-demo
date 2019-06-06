@@ -1,1 +1,1 @@
-export { default as FirestickKeys } from "./firestick-keys";
+export { FirestickKeys } from "./firestick-keys";
