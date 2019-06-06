@@ -19,11 +19,11 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import VideoPlayer from "react-native-video";
-import { FirestickKeys } from "./components/firestick-keys";
+import { FirestickKeys } from "../components";
 import {
   createSwitchNavigator,
   createAppContainer,
-  SwitchActions
+  StackActions
 } from "react-navigation";
 
 type Props = {};

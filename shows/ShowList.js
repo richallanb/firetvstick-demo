@@ -6,7 +6,9 @@
  * @flow
  */
 
-import React, { Component, useReducer } from "react";
+import React, { Component, useReducer, useEffect } from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import {
   Platform,
   StyleSheet,
@@ -15,18 +17,18 @@ import {
   Animated,
   DeviceEventEmitter,
   TouchableHighlight,
-  Button
+  Button,
+  BackHandler,
+  ScrollView
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import VideoPlayer from "react-native-video";
-import { FirestickKeys } from "./components/firestick-keys";
-import test from "./crawler/test";
 import {
   createSwitchNavigator,
   createAppContainer,
-  SwitchActions
+  StackActions
 } from "react-navigation";
-import FocusManager from "./FocusManager";
+import * as actions from "./actions";
 import ShowItem from "./ShowItem";
 
 const testData = [
@@ -89,7 +91,42 @@ const reducer = (state, action) => {
 
 const ShowList = props => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { navigation } = props;
+  const { navigation, fetchedShowData, shows, dispatch: reduxDispatch } = props;
+
+  const fetchData = async () => {
+    const response = await fetch(
+      "https://www.wonderfulsubs.com/api/v1/media/latest?count=24"
+    );
+    const json = await response.json();
+    console.log(json);
+    fetchedShowData(json);
+  };
+
+  let backHandler;
+  const componentDidMountEvents = () => {
+    backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      console.log("go back");
+      if (!navigation.isFocused) {
+        navigation.dispatch(
+          StackActions.pop({
+            n: 1
+          })
+        );
+        return true;
+      }
+      return false;
+    });
+    fetchData();
+  };
+
+  const componentDidUnmountEvents = () => {
+    backHandler.remove();
+  };
+
+  useEffect(() => {
+    componentDidMountEvents();
+    return componentDidUnmountEvents;
+  }, [false]);
 
   const setSelectedShow = id => {
     dispatch({
@@ -107,37 +144,31 @@ const ShowList = props => {
   const playVideo = async sourceFetch => {
     const source = await getSources(sourceFetch);
     console.log(source);
-    navigation.navigate("Player", {
-      uri: source.src
-    });
+    navigation.dispatch(
+      StackActions.push({
+        routeName: "Player",
+        params: { uri: source.src }
+      })
+    );
   };
 
-  const items = testData.map(item => (
+  const items = shows.data.map(item => (
     <ShowItem
       focused={item.id === state.selectedShow}
       key={item.id}
       title={item.name}
       imageSource={item.picture}
-      onPress={() => playVideo(item.seasons[0].episodes[0].sources)}
+      onPress={async () => {
+        const action = await item.seasons();
+        reduxDispatch(action);
+      }}
       onFocus={() => setSelectedShow(item.id)}
     />
   ));
   return (
-    <View style={styles.container}>
-      {/* <TouchableHighlight
-        style={styles.button}
-        key="video"
-        onPress={() => {
-          this.props.navigation.dispatch(
-            SwitchActions.jumpTo({ routeName: "Player" })
-          );
-          console.log("test");
-        }}
-      >
-        <Text>Details Screen</Text>
-      </TouchableHighlight> */}
-      {items}
-    </View>
+    <ScrollView>
+      <View style={styles.container}>{items}</View>
+    </ScrollView>
   );
 };
 
@@ -147,6 +178,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "flex-start",
+    flexWrap: "wrap",
     backgroundColor: "rgb(36,36,33)"
   },
   backgroundVideo: {
@@ -189,4 +221,16 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ShowList;
+const mapDispatchToProps = dispatch => ({
+  dispatch,
+  ...bindActionCreators(actions, dispatch)
+});
+
+const mapStateToProps = state => ({
+  shows: state.shows
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ShowList);
