@@ -6,7 +6,7 @@
  * @flow
  */
 import React, { Component } from "react";
-import { Provider, connect } from "react-redux";
+import { Provider } from "react-redux";
 import { createAppContainer, createStackNavigator } from "react-navigation";
 import { useScreens } from "react-native-screens";
 import { Player } from "./player";

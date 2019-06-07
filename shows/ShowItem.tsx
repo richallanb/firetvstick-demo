@@ -7,8 +7,24 @@ import {
   StyleSheet
 } from "react-native";
 
-export default class ShowItem extends Component {
-  render() {
+interface Props {
+  onPress: () => void;
+  imageSource: string;
+  title: string;
+  onFocus: () => void;
+  focused: boolean;
+}
+
+export default class ShowItem extends Component<Props> {
+  public static defaultProps = {
+    onPress: () => {},
+    onFocus: () => {},
+    selected: false,
+    title: "None",
+    imageSource: "https://via.placeholder.com/240x360.png"
+  };
+
+  public render() {
     const { onPress, imageSource, title, onFocus, focused } = this.props;
     const onFocusStyleOverrides = focused
       ? {
@@ -22,20 +38,14 @@ export default class ShowItem extends Component {
       <TouchableNativeFeedback onPress={onPress} onFocus={onFocus}>
         <View style={{ ...styles.container, ...onFocusStyleOverrides }}>
           <Image style={styles.image} source={{ uri: imageSource }} />
-          <Text numberOfLines={1} style={styles.text}>{title}</Text>
+          <Text numberOfLines={1} style={styles.text}>
+            {title}
+          </Text>
         </View>
       </TouchableNativeFeedback>
     );
   }
 }
-
-ShowItem.defaultProps = {
-  onPress: () => {},
-  onFocus: () => {},
-  selected: false,
-  title: "None",
-  imageSource: "https://via.placeholder.com/240x360.png"
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -61,7 +71,7 @@ const styles = StyleSheet.create({
     height: 180
   },
   text: {
-    color: 'white',
+    color: "white",
     marginTop: 8
   }
 });
