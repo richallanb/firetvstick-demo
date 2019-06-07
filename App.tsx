@@ -11,7 +11,9 @@ import { createAppContainer, createStackNavigator } from "react-navigation";
 import { useScreens } from "react-native-screens";
 import { Player } from "./player";
 import { ShowList } from "./shows";
-import store from './store';
+import store from "./store";
+import { WonderfulSubs } from "./provider";
+import { Provider as ProviderInterface } from "./provider/providerInterface";
 
 useScreens();
 
@@ -32,6 +34,10 @@ const AppNavigator = createStackNavigator(
 
 const Navigation = createAppContainer(AppNavigator);
 
+(() => {
+  const provider = new WonderfulSubs();
+  global.__provider = (): ProviderInterface => provider;
+})();
 
 export default class App extends Component {
   render() {
