@@ -1,13 +1,6 @@
-import Provider from "../providerInterface";
+import { Provider } from "../providerInterface";
 import { updateShowData } from "../../shows/actions";
-import {
-  Show,
-  ShowDescription,
-  Season,
-  Episode,
-  EpisodeDescription,
-  Source
-} from "../../types";
+import { Category, Show, Season, Episode, Source } from "../../types";
 
 const showShortName = ({ url }) => {
   return url.substring(url.indexOf("watch/") + 6);
@@ -33,6 +26,10 @@ interface ShowWithShortName extends Show {
 
 export default class WonderfulSubs implements Provider {
   public key = "wonderfulsubs";
+  public categories = [
+    { name: "Latest", type: "latest" },
+    { name: "Popular", type: "popular" }
+  ];
   private settings: object;
   private showData: ShowWithShortName[];
 
@@ -49,9 +46,9 @@ export default class WonderfulSubs implements Provider {
     return this.settings;
   }
 
-  async fetchShows(): Promise<Show[]> {
+  async fetchShows({ type = "latest" }: Category): Promise<Show[]> {
     const response = await fetch(
-      "https://www.wonderfulsubs.com/api/v1/media/latest?count=24"
+      `https://www.wonderfulsubs.com/api/v1/media/${type}?count=24`
     );
     const json = await response.json();
     const showData = this.translateShows(json);
@@ -59,21 +56,21 @@ export default class WonderfulSubs implements Provider {
     return showData;
   }
 
-  async fetchShowDecription(target: {
-    showId: number;
-  }): Promise<Show> {
+  async fetchShowDecription(target: { showId: number }): Promise<Show> {
     const { showId } = target;
     return this.showData[showId];
   }
 
   async fetchSeasons(target: { showId: number }): Promise<Show> {
     const { showId } = target;
-    const show = <ShowWithShortName> this.showData[showId];
+    const show = <ShowWithShortName>this.showData[showId];
     if (show.seasonsFetched) {
       return show;
     }
     const response = await fetch(
-      `https://www.wonderfulsubs.com/api/v1/media/series?series=${show.shortName}`
+      `https://www.wonderfulsubs.com/api/v1/media/series?series=${
+        show.shortName
+      }`
     );
     const json = await response.json();
     const translatedSeasons = this.translateSeasons(json);
@@ -81,7 +78,7 @@ export default class WonderfulSubs implements Provider {
       ...show,
       seasonsFetched: true,
       seasons: translatedSeasons
-    }
+    };
     return this.showData[showId];
   }
 
@@ -113,7 +110,7 @@ export default class WonderfulSubs implements Provider {
       (show: any, index: number) =>
         <ShowWithShortName>{
           id: index,
-          provider: "wonderfulsubs",
+          provider: this.key,
           name: show.title,
           description: show.description,
           picture: show.poster_tall[2].source,
