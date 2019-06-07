@@ -1,33 +1,33 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React, { Component } from "react";
+import React from "react";
+import { Component } from "react";
 import {
-  Platform,
   StyleSheet,
   View,
   Text,
   Animated,
-  DeviceEventEmitter,
-  TouchableHighlight,
-  Button
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import VideoPlayer from "react-native-video";
 import { FirestickKeys } from "../components";
-import {
-  createSwitchNavigator,
-  createAppContainer,
-  StackActions
-} from "react-navigation";
 
-type Props = {};
-export default class Player extends Component<Props> {
+interface Props {
+  navigation: any
+};
+interface State {
+  paused: boolean,
+  fastForward: number,
+  fastReverse: number,
+  video: {
+    progress: {
+      currentTime: number
+    }
+  },
+  status: {
+    display: object,
+    anim: object
+  }
+}
+export default class Player extends Component<Props, State> {
   state = {
     paused: false,
     fastForward: 0,
@@ -35,8 +35,15 @@ export default class Player extends Component<Props> {
     status: {
       display: undefined,
       anim: new Animated.Value(0)
+    },
+    video: {
+      progress: {
+        currentTime: undefined
+      }
     }
   };
+
+  player = undefined;
 
   displayPopup = ({ icon, text, autoDismiss = true }) => {
     Animated.timing(
@@ -95,7 +102,7 @@ export default class Player extends Component<Props> {
           }} // Can be a URL or a local file.
           style={styles.backgroundVideo}
           paused={this.state.paused}
-          onProgress={progress => this.setState({ video: { progress } })}
+          onProgress={(progress: any) => this.setState({ video: { progress } })}
           ref={ref => {
             this.player = ref;
           }}

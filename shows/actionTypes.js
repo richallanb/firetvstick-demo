@@ -1,4 +1,0 @@
-export const UPDATE_SHOWS = 'UPDATE_SHOWS';
-export const FETCH_SHOW_DATA = 'FETCH_SHOW_DATA';
-export const FETCHED_SHOW_DATA = 'FETCHED_SHOW_DATA';
-export const UPDATE_SHOW_DATA = 'UPDATE_SHOW_DATA';
