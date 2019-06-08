@@ -12,6 +12,7 @@ export interface Provider {
   setSettings(settings: object): object;
   fetchShows({ type } : Category): Promise<Show[]>;
   fetchShowDecription(target: { showId: number }): Promise<Show>;
+  searchShows(target: {query: string}): Promise<Show[]>;
   fetchSeasons(target: { showId: number }): Promise<Show>;
   fetchEpisodes(target: { showId: number; seasonId: number }): Promise<Show>;
   fetchEpisodeDescription(target: {

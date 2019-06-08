@@ -1,11 +1,21 @@
-import { put, takeLatest } from "redux-saga/effects";
-import { FETCH_SHOW_DATA, FETCH_SEASON_DATA } from "../shows/actionTypes";
-import { updateShows, updateShowData } from "../shows/actions";
+import { put, takeLeading, select } from "redux-saga/effects";
+import {
+  FETCH_SHOW_DATA,
+  FETCH_SEASON_DATA,
+  FETCH_SEARCH_SHOW_DATA
+} from "../shows/actionTypes";
+import {
+  updateShowData,
+  fetchedShowData,
+  searchedShowData
+} from "../shows/actions";
 import { AnyAction } from "redux";
 
-function* fetchShowData() {
-  const data = yield global.__provider().fetchShows({ name: "", type: "popular" });
-  yield put(updateShows({ data }));
+function* fetchShowData({ payload: category }: AnyAction) {
+  const data = yield global
+    .__provider()
+    .fetchShows({ name: "", type: category });
+  yield put(fetchedShowData({ data }));
 }
 
 function* fetchSeasonData({ payload: { id } }: AnyAction) {
@@ -13,10 +23,19 @@ function* fetchSeasonData({ payload: { id } }: AnyAction) {
   yield put(updateShowData({ showId: id, data }));
 }
 
+function* fetchSearchData({ payload: { query } }: AnyAction) {
+  const searchData = yield global.__provider().searchShows({ query });
+  yield put(searchedShowData({ searchData }));
+}
+
 export function* fetchShowEpisodesAsync() {
-  yield takeLatest(FETCH_SEASON_DATA, fetchSeasonData);
+  yield takeLeading(FETCH_SEASON_DATA, fetchSeasonData);
 }
 
 export function* fetchShowDataAsync() {
-  yield takeLatest(FETCH_SHOW_DATA, fetchShowData);
+  yield takeLeading(FETCH_SHOW_DATA, fetchShowData);
+}
+
+export function* fetchSearchDataAsync() {
+  yield takeLeading(FETCH_SEARCH_SHOW_DATA, fetchSearchData);
 }

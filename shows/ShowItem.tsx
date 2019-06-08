@@ -3,12 +3,14 @@ import {
   View,
   Image,
   Text,
-  TouchableNativeFeedback,
+  TouchableHighlight,
   StyleSheet
 } from "react-native";
+import { DISPLAY } from '../constants';
 
 interface Props {
   onPress: () => void;
+  preferredFocus?: boolean;
   imageSource: string;
   title: string;
   onFocus: () => void;
@@ -18,6 +20,7 @@ interface Props {
 export default class ShowItem extends Component<Props> {
   public static defaultProps = {
     onPress: () => {},
+    preferredFocus: false,
     onFocus: () => {},
     selected: false,
     title: "None",
@@ -25,7 +28,7 @@ export default class ShowItem extends Component<Props> {
   };
 
   public render() {
-    const { onPress, imageSource, title, onFocus, focused } = this.props;
+    const { onPress, preferredFocus, imageSource, title, onFocus, focused } = this.props;
     const onFocusStyleOverrides = focused
       ? {
           elevation: 5,
@@ -35,14 +38,14 @@ export default class ShowItem extends Component<Props> {
         }
       : {};
     return (
-      <TouchableNativeFeedback onPress={onPress} onFocus={onFocus}>
+      <TouchableHighlight underlayColor="rgba(0,0,0,0)" activeOpacity={1} hasTVPreferredFocus={preferredFocus} onPress={onPress} onFocus={onFocus}>
         <View style={{ ...styles.container, ...onFocusStyleOverrides }}>
           <Image style={styles.image} source={{ uri: imageSource }} />
           <Text numberOfLines={1} style={styles.text}>
             {title}
           </Text>
         </View>
-      </TouchableNativeFeedback>
+      </TouchableHighlight>
     );
   }
 }
@@ -63,15 +66,16 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginTop: 5,
     marginBottom: 5,
-    width: 200,
-    height: 248
+    width: DISPLAY.SHOW_ITEM.ITEM_WIDTH,
+    height: DISPLAY.SHOW_ITEM.ITEM_HEIGHT
   },
   image: {
-    width: 120,
-    height: 180
+    width: DISPLAY.SHOW_ITEM.ITEM_WIDTH * 0.8,
+    height: DISPLAY.SHOW_ITEM.ITEM_HEIGHT * 0.8
   },
   text: {
     color: "white",
-    marginTop: 8
+    marginTop: 8,
+    fontSize: 14
   }
 });

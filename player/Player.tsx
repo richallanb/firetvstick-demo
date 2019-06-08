@@ -1,31 +1,26 @@
 import React from "react";
 import { Component } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Animated,
-} from "react-native";
+import { StyleSheet, View, Text, Animated } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import VideoPlayer from "react-native-video";
 import { FirestickKeys } from "../components";
 
 interface Props {
-  navigation: any
-};
+  navigation: any;
+}
 interface State {
-  paused: boolean,
-  fastForward: number,
-  fastReverse: number,
+  paused: boolean;
+  fastForward: number;
+  fastReverse: number;
   video: {
     progress: {
-      currentTime: number
-    }
-  },
+      currentTime: number;
+    };
+  };
   status: {
-    display: object,
-    anim: object
-  }
+    display: object;
+    anim: object;
+  };
 }
 export default class Player extends Component<Props, State> {
   state = {
@@ -45,6 +40,16 @@ export default class Player extends Component<Props, State> {
 
   player = undefined;
 
+  dismissPopup = () =>
+  Animated.timing(
+    // Animate over time
+    this.state.status.anim, // The animated value to drive
+    {
+      toValue: 0, // Animate to opacity: 1 (opaque)
+      duration: 1000 // Make it take a while
+    }
+  ).start();
+
   displayPopup = ({ icon, text, autoDismiss = true }) => {
     Animated.timing(
       // Animate over time
@@ -56,19 +61,10 @@ export default class Player extends Component<Props, State> {
     ).start(); // Starts the animation
     if (autoDismiss) {
       setTimeout(
-        (() =>
-          Animated.timing(
-            // Animate over time
-            this.state.status.anim, // The animated value to drive
-            {
-              toValue: 0, // Animate to opacity: 1 (opaque)
-              duration: 1000 // Make it take a while
-            }
-          ).start()).bind(this),
+        this.dismissPopup,
         2000
       );
     }
-    console.log(this.state);
     this.setState({
       status: {
         ...this.state.status,
@@ -91,7 +87,7 @@ export default class Player extends Component<Props, State> {
     const { navigation } = this.props;
     const uri = navigation.getParam(
       "uri",
-      "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4"
+      "http://www.html5videoplayer.net/videos/toystory.mp4"
     );
 
     return (
@@ -110,8 +106,8 @@ export default class Player extends Component<Props, State> {
         {this.state.status.display || <View />}
 
         <FirestickKeys
+          keyPressTimeOut={500}
           onPlay={() => {
-            console.log(this.state.paused);
             this.setState({ paused: !this.state.paused });
             const displayobj = !this.state.paused
               ? { icon: "play", text: "Play" }
@@ -121,14 +117,15 @@ export default class Player extends Component<Props, State> {
               autoDismiss: !this.state.paused
             });
           }}
-          // onLeftHold={() => {
-          //   this.setState({
-          //     fastReverse: this.state.fastReverse
-          //       ? this.state.fastReverse - 10
-          //       : -10
-          //   });
-          //   console.log(this.state.fastReverse);
-          // }}
+          onLeftHold={() => {
+            const reverseAmt = this.state.fastReverse
+            ? this.state.fastReverse - 10
+            : -10;
+            this.setState({
+              fastReverse: reverseAmt
+            });
+            this.displayPopup({ icon: "backward", text: `${Math.abs(reverseAmt)} sec`, autoDismiss: false });
+          }}
           onLeft={() => {
             const reverseAmt = this.state.fastReverse
               ? this.state.fastReverse
@@ -138,16 +135,17 @@ export default class Player extends Component<Props, State> {
                 reverseAmt + this.state.video.progress.currentTime
               );
             this.setState({ fastReverse: 0 });
-            this.displayPopup({ icon: "backward", text: "" });
+            this.displayPopup({ icon: "backward", text: `${Math.abs(reverseAmt)} sec` });
           }}
-          // onRightHold={() => {
-          //   this.setState({
-          //     fastForward: this.state.fastForward
-          //       ? this.state.fastForward + 10
-          //       : 10
-          //   });
-          //   console.log(this.state.fastForward);
-          // }}
+          onRightHold={() => {
+            const forwardAmt = this.state.fastForward
+            ? this.state.fastForward + 10
+            : 10;
+            this.setState({
+              fastForward: forwardAmt
+            });
+            this.displayPopup({ icon: "forward", text: `${Math.abs(forwardAmt)} sec`, autoDismiss: false });
+          }}
           onRight={() => {
             const forwardAmt = this.state.fastForward
               ? this.state.fastForward
@@ -157,7 +155,7 @@ export default class Player extends Component<Props, State> {
                 forwardAmt + this.state.video.progress.currentTime
               );
             this.setState({ fastForward: 0 });
-            this.displayPopup({ icon: "forward", text: "" });
+            this.displayPopup({ icon: "forward", text: `${Math.abs(forwardAmt)} sec` });
           }}
         />
       </View>

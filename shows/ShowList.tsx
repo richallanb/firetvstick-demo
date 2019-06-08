@@ -6,68 +6,44 @@
  * @flow
  */
 
-import React, { useReducer, useEffect } from "react";
-import { bindActionCreators } from "redux";
+import React from "react";
+import { AnyAction } from "redux";
 import { connect } from "react-redux";
-import { StyleSheet, View, BackHandler, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { StackActions } from "react-navigation";
 import * as actions from "./actions";
 import ShowItem from "./ShowItem";
 import { Show } from "../types";
-
-
-const initialState = {
-  selectedShow: undefined
-};
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "SET_SELECTED_SHOW": {
-      return { ...state, selectedShow: action.payload };
-    }
-    default: {
-      return state;
-    }
-  }
-};
+import { DISPLAY } from "../constants";
+import { useStateValue } from "./context";
 
 interface Props {
   navigation: any;
-  initializeShows();
-  fetchSeasonData(target: { showId: number });
+  infiniteScrollShowData(category: string): AnyAction;
+  fetchSeasonData(target: { showId: number }): AnyAction;
+  category: string;
   shows: {
-    data: [Show];
+    data: Show[];
+    searchData: Show[];
   };
 }
 
 const ShowList = (props: Props) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const { navigation, initializeShows, fetchSeasonData, shows } = props;
+  const [state, dispatch] = useStateValue();
+  const {
+    navigation,
+    infiniteScrollShowData,
+    fetchSeasonData,
+    category,
+    shows
+  } = props;
 
-  let backHandler;
-  const componentDidMountEvents = () => {
-    backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      console.log("go back");
-      if (!navigation.isFocused) {
-        navigation.dispatch(
-          StackActions.pop({
-            n: 1
-          })
-        );
-        return true;
-      }
-      return false;
+  const resetCategory = () => {
+    dispatch({
+      type: "SET_SELECTED_CATEGORY",
+      payload: undefined
     });
-    initializeShows();
   };
-
-  const componentDidUnmountEvents = () => {
-    backHandler.remove();
-  };
-
-  useEffect(() => {
-    componentDidMountEvents();
-    return componentDidUnmountEvents;
-  }, [false]);
 
   const setSelectedShow = id => {
     dispatch({
@@ -93,19 +69,55 @@ const ShowList = (props: Props) => {
     );
   };
 
-  const items = shows.data.map(item => (
+  const showData = category === "search" ? shows.searchData : shows.data;
+  const items = showData.map(item => (
     <ShowItem
       focused={item.id === state.selectedShow}
       key={item.id}
       title={item.name}
       imageSource={item.picture}
       onPress={() => fetchSeasonData({ showId: item.id })}
-      onFocus={() => setSelectedShow(item.id)}
+      onFocus={() => {
+        resetCategory();
+        setSelectedShow(item.id);
+      }}
     />
   ));
+
+  const calculateScrollPercentage = (scrollPosition: number) => {
+    const scrollPositionWithOffset = this.scrollWindowSize + scrollPosition;
+    return scrollPositionWithOffset / this.windowHeight;
+  };
+
   return (
-    <ScrollView>
-      <View style={styles.container}>{items}</View>
+    <ScrollView
+      onLayout={({ nativeEvent: { layout } }) =>
+        (this.scrollWindowSize = layout.height)
+      }
+      onScroll={({ nativeEvent: { contentOffset } }) => {
+        if (
+          shows.data.length < DISPLAY.SHOW_LIST.MAX_SHOWS_ON_SCREEN &&
+          category !== "search"
+        ) {
+          const scrollPrecentage = calculateScrollPercentage(contentOffset.y);
+          if (
+            scrollPrecentage >
+            DISPLAY.SHOW_LIST.FETCH_SHOWS_AT_SCROLL_PRECENTAGE
+          ) {
+            infiniteScrollShowData(category);
+          }
+        }
+      }}
+      scrollEventThrottle={10}
+    >
+      <View
+        onLayout={({ nativeEvent: { layout } }) =>
+          (this.windowHeight = layout.height)
+        }
+        style={styles.container}
+      >
+        {items}
+      </View>
     </ScrollView>
   );
 };
@@ -118,51 +130,12 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     flexWrap: "wrap",
     backgroundColor: "rgb(36,36,33)"
-  },
-  backgroundVideo: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    zIndex: 500
-  },
-  statusContainer: {
-    zIndex: 700,
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingLeft: 10,
-    paddingRight: 10,
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    opacity: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    height: 60
-  },
-  statusText: {
-    color: "#FFF",
-    fontSize: 20
-  },
-  statusIcon: {
-    color: "#FFF",
-    fontSize: 25,
-    marginRight: 10
-  },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10
   }
 });
 
-const mapDispatchToProps = dispatch => ({
-  dispatch,
-  ...bindActionCreators(actions, dispatch)
-});
+const mapDispatchToProps = {
+  ...actions
+};
 
 const mapStateToProps = state => ({
   shows: state.shows

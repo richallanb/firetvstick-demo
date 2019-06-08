@@ -1,32 +1,32 @@
 import React, { Component } from "react";
 import { View } from "react-native";
-import TVEventHandler from "TVEventHandler";
+import { DeviceEventEmitter } from "react-native";
 import KeyMappings from "./KeyMappings";
 
-function throttle(callback, wait, immediate = false) {
-  let timeout = null;
-  let initialCall = true;
-
-  return function() {
-    const callNow = immediate && initialCall;
-    const next = () => {
-      callback.apply(this, arguments);
-      timeout = null;
-    };
-
-    if (callNow) {
-      initialCall = false;
-      next();
-    }
-
-    if (!timeout) {
-      timeout = setTimeout(next, wait);
-    }
-  };
-}
-
 export default class FirestickKeys extends Component {
-  listenerKeyUp: function;
+  timer = undefined;
+
+  throttle(callback, wait, immediate = false) {
+    this.timer = null;
+    let initialCall = true;
+  
+    return () => {
+      const callNow = immediate && initialCall;
+      const next = () => {
+        callback.apply(this, arguments);
+        this.timer = null;
+      };
+  
+      if (callNow) {
+        initialCall = false;
+        next();
+      }
+  
+      if (!this.timer) {
+        this.timer = setTimeout(next, wait);
+      }
+    };
+  }
 
   buildProps = () => {
     return Object.keys(this.props).reduce((mappings, propName) => {
@@ -38,8 +38,8 @@ export default class FirestickKeys extends Component {
         return {
           ...mappings,
           [key]: {
-            action: this.props[propName]
-            // holdDown: KeyMappings[propName].holdDown
+            action: this.props[propName],
+            holdDown: KeyMappings[propName].holdDown
           }
         };
       }
@@ -53,42 +53,45 @@ export default class FirestickKeys extends Component {
 
   _enableEventHandler = () => {
     const mappedProps = this.buildProps();
-    // let throttledKeyDown;
-    this.listenerKeyUp = new TVEventHandler();
-    this.listenerKeyUp.enable(this, (cmp, { eventType: keyCode }) => {
-      console.log(keyCode);
-      if (mappedProps && mappedProps[keyCode]) {
-        mappedProps[keyCode].action();
+    let throttledKeyDown;
+    this.listenerKeyUp = DeviceEventEmitter.addListener(
+      "onKeyUp",
+      ({ keyCode = 0 }) => {
+        console.log("onKeyUp", keyCode);
+        if (mappedProps && mappedProps[keyCode]) {
+          mappedProps[keyCode].action();
+        }
+        if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
+          clearTimeout(this.timer);
+          throttledKeyDown = undefined;
+        }
       }
-      // if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
-      //   throttledKeyDown = undefined;
-      // }
-    });
-    // this.listenerKeyDown = DeviceEventEmitter.addListener(
-    //   "onKeyDown",
-    //   ({ keyCode = 0 }) => {
-    //     const heldKeyCode = `${keyCode}_hold`;
-    //     if (mappedProps && mappedProps[heldKeyCode]) {
-    //       if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
-    //         throttledKeyDown.action();
-    //       } else {
-    //         throttledKeyDown = {
-    //           keyCode,
-    //           action: throttle(
-    //             mappedProps[heldKeyCode].action,
-    //             this.props.keyPressTimeOut,
-    //             true
-    //           )
-    //         };
-    //       }
-    //     }
-    //   }
-    // );
+    );
+    this.listenerKeyDown = DeviceEventEmitter.addListener(
+      "onKeyDown",
+      ({ keyCode = 0 }) => {
+        const heldKeyCode = `${keyCode}_hold`;
+        if (mappedProps && mappedProps[heldKeyCode]) {
+          if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
+            throttledKeyDown.action();
+          } else {
+            throttledKeyDown = {
+              keyCode,
+              action: this.throttle(
+                mappedProps[heldKeyCode].action,
+                this.props.keyPressTimeOut,
+                true
+              )
+            };
+          }
+        }
+      }
+    );
   };
 
   _disableEventHandler = () => {
     if (this.listenerKeyUp) {
-      this.listenerKeyUp.disable();
+      this.listenerKeyUp.remove();
       delete this.listenerKeyUp;
     }
   };

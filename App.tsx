@@ -1,43 +1,52 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 import React, { Component } from "react";
 import { Provider } from "react-redux";
 import { createAppContainer, createStackNavigator } from "react-navigation";
 import { useScreens } from "react-native-screens";
 import { Player } from "./player";
-import { ShowList } from "./shows";
+import { ShowsLayout } from "./shows";
 import store from "./store";
 import { WonderfulSubs } from "./provider";
 import { Provider as ProviderInterface } from "./provider/providerInterface";
+import { Easing, Animated } from "react-native";
 
 useScreens();
+
+const provider = new WonderfulSubs();
+
+(() => {
+  global.__provider = (): ProviderInterface => provider;
+})();
+
+const initialCategory = global.__provider().categories[0].type;
 
 const AppNavigator = createStackNavigator(
   {
     Player: {
       screen: Player
     },
-    ShowList: {
-      screen: ShowList
+    Shows: {
+      screen: ShowsLayout
     }
   },
   {
-    initialRouteName: "ShowList",
+    cardStyle: { backgroundColor: "#242421", opacity: 1 },
+    initialRouteName: "Shows",
+    initialRouteKey: initialCategory,
+    initialRouteParams: {
+      category: initialCategory
+    },
+    transitionConfig: () => ({
+      transitionSpec: {
+        duration: 0
+      },
+      containerStyle: { backgroundColor: "transparent", },
+      screenInterpolator: undefined
+    }),
     headerMode: "none"
   }
 );
 
 const Navigation = createAppContainer(AppNavigator);
-
-(() => {
-  const provider = new WonderfulSubs();
-  global.__provider = (): ProviderInterface => provider;
-})();
 
 export default class App extends Component {
   render() {

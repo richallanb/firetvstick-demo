@@ -1,38 +1,49 @@
 import { createReducer } from "../redux-utils";
-import { WonderfulSubs } from "../provider";
-import { UPDATE_SHOWS, FETCHED_SHOW_DATA } from "./actionTypes";
 
-const updateShows = (state, action) => ({
+import {
+  FETCHED_SHOW_DATA,
+  FETCH_SHOW_DATA,
+  UPDATE_SHOW_DATA,
+  FETCH_SEARCH_SHOW_DATA,
+  FETCHED_SEARCH_SHOW_DATA
+} from "./actionTypes";
+
+const fetchedShowData = (state, action) => ({
   ...state,
-  ...action.payload
+  ...action.payload,
+  isFetching: false
 });
+
+const fetchedSearchShowData = (state, action) => ({
+  ...state,
+  ...action.payload,
+  isFetching: false
+})
 
 const updateShowData = (state, action) => {
   const { id, data } = action.payload;
   return {
-    state,
+    ...state,
     data: state.data.map(show => (show.id === id ? { ...show, ...data } : show))
   };
 };
 
-const fetchShowData = state => ({
+const isFetching = state => ({
   ...state,
   isFetching: true
 });
 
-const fetchedShowData = state => ({
-  ...state,
-  isFetching: false
-})
 export default createReducer(
   {
     data: [],
+    searchData: [],
     isFetching: false
   },
   {
-    UPDATE_SHOWS: updateShows,
-    FETCH_SHOW_DATA: fetchShowData,
-    FETCHED_SHOW_DATA: fetchedShowData,
-    UPDATE_SHOW_DATA: updateShowData
+    [FETCH_SHOW_DATA]: isFetching,
+    [FETCH_SEARCH_SHOW_DATA]: isFetching,
+    [FETCHED_SEARCH_SHOW_DATA]: fetchedSearchShowData,
+    [FETCHED_SHOW_DATA]: fetchedShowData,
+    [UPDATE_SHOW_DATA]: updateShowData
   }
 );
