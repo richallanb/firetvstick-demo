@@ -107,14 +107,14 @@ class ShowHeader extends Component<Props> {
         <View style={styles.categoryContainer}>
           {categories}
           <Category
-            preferredFocus={"search" === category}
-            key="search"
-            icon="search"
+            preferredFocus={DATA_CONST.CATEGORIES.SEARCH_CATEGORY === category}
+            key={DATA_CONST.CATEGORIES.SEARCH_CATEGORY}
+            icon={DATA_CONST.CATEGORIES.SEARCH_CATEGORY}
             onFocus={() => {
               resetSelectedShow();
-              setSelectedCategory("search");
+              setSelectedCategory(DATA_CONST.CATEGORIES.SEARCH_CATEGORY);
             }}
-            focused={"search" === focusedCategory}
+            focused={DATA_CONST.CATEGORIES.SEARCH_CATEGORY === focusedCategory}
             onPress={() => updateSearchBarVisibility(true)}
           />
           {searchBarVisible && (
@@ -123,7 +123,7 @@ class ShowHeader extends Component<Props> {
               onSubmitEditing={({ nativeEvent: { text: query } }) => {
                 if (query && query.length > 0) {
                   searchShowData(query);
-                  updateCategory("search", false);
+                  updateCategory(DATA_CONST.CATEGORIES.SEARCH_CATEGORY, false);
                 }
               }}
               onBlur={() => updateSearchBarVisibility(false)}
