@@ -6,7 +6,8 @@ import {
   TouchableHighlight,
   StyleSheet
 } from "react-native";
-import { DISPLAY } from '../constants';
+import { Button } from "../components";
+import { DISPLAY } from "../constants";
 
 interface Props {
   onPress: () => void;
@@ -28,24 +29,28 @@ export default class ShowItem extends Component<Props> {
   };
 
   public render() {
-    const { onPress, preferredFocus, imageSource, title, onFocus, focused } = this.props;
-    const onFocusStyleOverrides = focused
-      ? {
-          elevation: 5,
-          backgroundColor: "rgb(80, 88, 88)",
-          borderColor: "rgba(255,255,255,0.25)",
-          borderWidth: 1
-        }
-      : {};
+    const { onPress, preferredFocus, imageSource, onFocus } = this.props;
+
     return (
-      <TouchableHighlight underlayColor="rgba(0,0,0,0)" activeOpacity={1} hasTVPreferredFocus={preferredFocus} onPress={onPress} onFocus={onFocus}>
-        <View style={{ ...styles.container, ...onFocusStyleOverrides }}>
+      <Button
+        underlayColor="rgba(60,60,60,0)"
+        activeOpacity={1}
+        hasTVPreferredFocus={preferredFocus}
+        underlayStyle={{ elevation: 0, zIndex: 9999 }}
+        focusChildStyle={{
+          transform: [{ scaleX: 1.35 }, {scaleY: 1.35 }, {translateY: 0}, {translateX: 0}],
+          elevation: 4,
+          backgroundColor: "rgba(90,90,90,1)"
+          
+        }}
+        onPress={onPress}
+        onFocus={onFocus}
+        style={styles.button}
+      >
+        <View style={styles.container}>
           <Image style={styles.image} source={{ uri: imageSource }} />
-          <Text numberOfLines={1} style={styles.text}>
-            {title}
-          </Text>
         </View>
-      </TouchableHighlight>
+      </Button>
     );
   }
 }
@@ -58,24 +63,20 @@ const styles = StyleSheet.create({
     paddingRight: 8,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderRadius: 0,
-    borderColor: "rgba(0,0,0,0)",
-    elevation: 0,
-    marginLeft: 5,
-    marginRight: 5,
-    marginTop: 5,
-    marginBottom: 5,
-    width: DISPLAY.SHOW_ITEM.ITEM_WIDTH,
-    height: DISPLAY.SHOW_ITEM.ITEM_HEIGHT
   },
   image: {
-    width: DISPLAY.SHOW_ITEM.ITEM_WIDTH * 0.8,
-    height: DISPLAY.SHOW_ITEM.ITEM_HEIGHT * 0.8
+    width: DISPLAY.SHOW_ITEM.ITEM_WIDTH * 0.75,
+    height: DISPLAY.SHOW_ITEM.ITEM_HEIGHT * 0.75
   },
   text: {
     color: "white",
     marginTop: 8,
     fontSize: 14
+  },
+  button: {
+    paddingTop: DISPLAY.SHOW_ITEM.ITEM_HEIGHT / 3,
+    paddingBottom: DISPLAY.SHOW_ITEM.ITEM_HEIGHT / 3,
+    marginLeft: 15,
+    marginRight: 15
   }
 });

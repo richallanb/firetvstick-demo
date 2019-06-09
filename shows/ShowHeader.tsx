@@ -68,8 +68,8 @@ class ShowHeader extends Component<Props> {
       category,
       navigation
     } = this.props;
-    const showData = category === "search" ? shows.searchData : shows.data;
-    const show = showData[selectedShow];
+    const showsData = category === "search" ? shows.searchData : shows.data;
+    const show = showsData[selectedShow];
     const focusedCategory = selectedCategory || category;
 
     const updateCategory = (newCategory, jumpTo) => {
@@ -136,12 +136,15 @@ class ShowHeader extends Component<Props> {
     const descriptionView = () => (
       <View style={styles.descriptionContainer}>
         <Image style={styles.image} source={{ uri: show.wallArt }} />
-        <Text numberOfLines={8} style={styles.description}>
-          {show.description.trim()}
-        </Text>
+        <View style={styles.descriptionTextContainer}>
+          <Text numberOfLines={1} style={styles.title}>{show.name}</Text>
+          <Text numberOfLines={6} style={styles.description}>
+            {show.description.trim()}
+          </Text>
+        </View>
       </View>
     );
-    if (selectedShow === undefined || shows.data.length < 1) {
+    if (selectedShow === undefined || showsData.length < 1) {
       return (
         <View style={{ ...styles.container, ...this.props.style }}>
           {categoryView()}
@@ -164,10 +167,11 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingBottom: 10,
-    backgroundColor: "rgb(36,36,33)"
+    backgroundColor: "rgb(30,30,25)",
+    elevation: 5
   },
   descriptionContainer: {
-    marginTop: 10,
+    marginTop: 5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between"
@@ -177,11 +181,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start"
   },
+  descriptionTextContainer: {
+    justifyContent: "flex-start",
+    height: DISPLAY.SHOW_ITEM.ITEM_WIDTH * 0.9
+  },
   description: {
     opacity: 1,
     color: "white",
     width: winSize.width - 260,
     fontSize: 12
+  },
+  title: {
+    opacity: 1,
+    color: "white",
+    fontSize: 22,
+    marginBottom: 10,
+    marginTop: -2.5
   },
   image: {
     width: DISPLAY.SHOW_ITEM.ITEM_HEIGHT * 0.9,

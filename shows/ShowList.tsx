@@ -9,8 +9,9 @@
 import React from "react";
 import { AnyAction } from "redux";
 import { connect } from "react-redux";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView, ActivityIndicator } from "react-native";
 import { StackActions } from "react-navigation";
+import { debounce } from "lodash";
 import * as actions from "./actions";
 import ShowItem from "./ShowItem";
 import { Show } from "../types";
@@ -19,10 +20,12 @@ import { useStateValue } from "./context";
 
 interface Props {
   navigation: any;
+  
   infiniteScrollShowData(category: string): AnyAction;
   fetchSeasonData(target: { showId: number }): AnyAction;
   category: string;
   shows: {
+    isFetching: boolean;
     data: Show[];
     searchData: Show[];
   };
@@ -37,7 +40,7 @@ const ShowList = (props: Props) => {
     category,
     shows
   } = props;
-
+  const { isFetching } = shows;
   const resetCategory = () => {
     dispatch({
       type: "SET_SELECTED_CATEGORY",
@@ -69,18 +72,20 @@ const ShowList = (props: Props) => {
     );
   };
 
-  const showData = category === "search" ? shows.searchData : shows.data;
-  const items = showData.map(item => (
+  const onFocus = id => {
+    resetCategory();
+    setSelectedShow(id);
+  };
+  const onFocusDebounce = debounce(onFocus, 100);
+
+  const showsData = category === "search" ? shows.searchData : shows.data;
+  const items = showsData.map(item => (
     <ShowItem
       focused={item.id === state.selectedShow}
       key={item.id}
-      title={item.name}
       imageSource={item.picture}
       onPress={() => fetchSeasonData({ showId: item.id })}
-      onFocus={() => {
-        resetCategory();
-        setSelectedShow(item.id);
-      }}
+      onFocus={() => onFocusDebounce(item.id)}
     />
   ));
 
@@ -96,7 +101,7 @@ const ShowList = (props: Props) => {
       }
       onScroll={({ nativeEvent: { contentOffset } }) => {
         if (
-          shows.data.length < DISPLAY.SHOW_LIST.MAX_SHOWS_ON_SCREEN &&
+          showsData.length < DISPLAY.SHOW_LIST.MAX_SHOWS_ON_SCREEN &&
           category !== "search"
         ) {
           const scrollPrecentage = calculateScrollPercentage(contentOffset.y);
@@ -108,7 +113,8 @@ const ShowList = (props: Props) => {
           }
         }
       }}
-      scrollEventThrottle={10}
+      contentContainerStyle={styles.scrollInnerContainer}
+      style={styles.scrollOuterContainer}
     >
       <View
         onLayout={({ nativeEvent: { layout } }) =>
@@ -117,12 +123,22 @@ const ShowList = (props: Props) => {
         style={styles.container}
       >
         {items}
+        { isFetching && 
+        <View style={styles.infiniteScrollingContainer}><ActivityIndicator size="large" color="#00ff00" /></View>}
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollInnerContainer: {
+    paddingLeft: 12,
+    paddingRight: 12,
+    marginBottom: 10
+  },
+  scrollOuterContainer: {
+    paddingBottom: 10
+  },
   container: {
     flex: 1,
     flexDirection: "row",
@@ -130,6 +146,12 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     flexWrap: "wrap",
     backgroundColor: "rgb(36,36,33)"
+  },
+  infiniteScrollingContainer: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 40
   }
 });
 

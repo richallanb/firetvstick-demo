@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableHighlight, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { Button } from '../components'
 
 interface Props {
   onPress?: () => void;
@@ -46,12 +47,12 @@ export const Category = (props: Props) => {
     }
   });
   return (
-    <TouchableHighlight
+    <Button
       underlayColor="rgba(0,0,0,0)"
       activeOpacity={1}
       hasTVPreferredFocus={preferredFocus}
       onPress={onPress}
-      onFocus={onFocus}
+      onShowUnderlay={onFocus}
     >
       <View
         style={{
@@ -73,6 +74,6 @@ export const Category = (props: Props) => {
           </Text>
         )}
       </View>
-    </TouchableHighlight>
+    </Button>
   );
 };
