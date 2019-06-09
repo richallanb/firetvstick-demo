@@ -80,7 +80,8 @@ const styles = StyleSheet.create({
   scrollInnerContainer: {
     paddingLeft: 12,
     paddingRight: 12,
-    marginBottom: 10
+    marginBottom: 10,
+    paddingBottom: 5
   },
   scrollOuterContainer: {
   },

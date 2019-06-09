@@ -1,11 +1,13 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import { NavigationEvents } from "react-navigation";
 import { AnyAction } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../redux-store/actions";
 import { StateProvider } from "./context";
 import { EpisodeList, SeasonList } from "./views";
+
+const winSize = Dimensions.get("window");
 
 interface Props {
   navigation: any;
@@ -42,10 +44,10 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   seasonContainer: {
-    width: "10%"
+    width: 130
   },
   episodeContainer: {
-    width: "90%"
+    width: winSize.width - 130
   }
 });
 

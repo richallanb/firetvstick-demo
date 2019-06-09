@@ -49,22 +49,36 @@ const SeasonList = (props: Props) => {
     );
   };
 
-  const seasonData =
-    (showData &&
-      showData.seasons) ||
-    [];
+  const seasonData = [
+    { id: 1, seasonNumber: 1, selected: true },
+    { id: 2, seasonNumber: 2 },
+    { id: 3, seasonNumber: 3 }
+  ];
+  // (showData &&
+  //   showData.seasons) ||
+  // [];
+
+  const seasonDataWithKey = seasonData.map(season => ({
+    ...season,
+    key: `${season.id}`
+  }));
+
+  const seasonItemRenderer = ({ item }) => (
+    <SeasonItem
+      key={item.id}
+      title={`Season ${item.seasonNumber}`}
+      selected={item.selected}
+      onFocus={() => console.log("focused", item.id)}
+      onPress={() => console.log("pressed", item.id)}
+    />
+  );
 
   return (
     <FlatList
-      data={seasonData.map(season => ({ ...season, key: `${season.id}` }))}
-      renderItem={({ item }) => (
-        <SeasonItem
-          key={item.id}
-          title={`Season ${item.seasonNumber}`}
-        />
-      )}
+      data={seasonDataWithKey}
+      renderItem={seasonItemRenderer}
       numColumns={1}
-      style={{...styles.scrollOuterContainer, ...style}}
+      style={{ ...styles.scrollOuterContainer, ...style }}
       contentContainerStyle={styles.scrollInnerContainer}
     />
   );
@@ -72,13 +86,15 @@ const SeasonList = (props: Props) => {
 
 const styles = StyleSheet.create({
   scrollInnerContainer: {
-    paddingLeft: 20,
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingLeft: 10,
     paddingRight: 10,
     marginBottom: 10,
-    marginTop: 10
+    marginTop: 32
   },
-  scrollOuterContainer: {
-  },
+  scrollOuterContainer: {},
   container: {
     flex: 1,
     flexDirection: "row",
