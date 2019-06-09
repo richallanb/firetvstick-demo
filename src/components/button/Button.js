@@ -8,17 +8,17 @@ class Button extends TouchableHighlight {
     if (!this._isMounted || !this._hasPressHandler()) {
       return;
     }
+    this.props.onShowUnderlay && this.props.onShowUnderlay();
     this.setState({
       extraChildStyle: {
         opacity: this.props.activeOpacity,
-        ...this.props.focusChildStyle
+        ...(this.props.focusChildStyle || {})
       },
       extraUnderlayStyle: {
         backgroundColor: this.props.underlayColor,
-        ...this.props.underlayStyle
+        ...(this.props.underlayStyle || {})
       }
     });
-    this.props.onShowUnderlay && this.props.onShowUnderlay();
   };
 }
 

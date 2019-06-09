@@ -9,6 +9,7 @@ import {
   TextInput
 } from "react-native";
 import { StackActions, NavigationActions } from "react-navigation";
+import { debounce } from 'lodash';
 import { DISPLAY_CONST, DATA_CONST } from "../../constants";
 import { StateContext } from "../context";
 import { Show } from "../../types";
@@ -46,6 +47,12 @@ class ShowHeader extends Component<Props> {
       });
     };
 
+    const onFocus = () => {
+      resetSelectedShow();
+    }
+
+    const onFocusDebounce = debounce(onFocus, 100);
+
     const setSelectedCategory = category => {
       dispatch({
         type: "SET_SELECTED_CATEGORY",
@@ -70,7 +77,7 @@ class ShowHeader extends Component<Props> {
     } = this.props;
     const showsData = category === DATA_CONST.CATEGORIES.SEARCH_CATEGORY ? shows.searchData : shows.data;
     const show = showsData[selectedShow];
-    const focusedCategory = selectedCategory || category;
+    const categorySelection = category;
 
     const updateCategory = (newCategory, jumpTo) => {
       if (category != newCategory) {
@@ -95,12 +102,9 @@ class ShowHeader extends Component<Props> {
             preferredFocus={type === category}
             key={type}
             title={name}
-            onFocus={() => {
-              resetSelectedShow();
-              setSelectedCategory(type);
-            }}
+            onFocus={onFocusDebounce}
             onPress={() => updateCategory(type, true)}
-            focused={type === focusedCategory}
+            selected={type === categorySelection}
           />
         ));
       return (
@@ -110,11 +114,9 @@ class ShowHeader extends Component<Props> {
             preferredFocus={DATA_CONST.CATEGORIES.SEARCH_CATEGORY === category}
             key={DATA_CONST.CATEGORIES.SEARCH_CATEGORY}
             icon={DATA_CONST.CATEGORIES.SEARCH_CATEGORY}
-            onFocus={() => {
-              resetSelectedShow();
-              setSelectedCategory(DATA_CONST.CATEGORIES.SEARCH_CATEGORY);
-            }}
-            focused={DATA_CONST.CATEGORIES.SEARCH_CATEGORY === focusedCategory}
+            title={"Search"}
+            onFocus={onFocusDebounce}
+            selected={DATA_CONST.CATEGORIES.SEARCH_CATEGORY === categorySelection}
             onPress={() => updateSearchBarVisibility(true)}
           />
           {searchBarVisible && (
@@ -170,7 +172,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingBottom: 10,
     backgroundColor: "rgb(30,30,25)",
-    elevation: 5
+    elevation: 2
   },
   descriptionContainer: {
     marginTop: 5,

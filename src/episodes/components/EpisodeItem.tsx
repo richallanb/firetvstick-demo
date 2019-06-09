@@ -40,27 +40,36 @@ export default class EpisodeItem extends Component<Props> {
 
     return (
       <View style={styles.container}>
-          <Text style={styles.episodeNumber}>{episodeNumber}</Text>
-          <Button
-            underlayColor="rgba(60,60,60,0)"
-            activeOpacity={1}
-            hasTVPreferredFocus={preferredFocus}
-            underlayStyle={{ elevation: 0, zIndex: 9999 }}
-            focusChildStyle={{
-              elevation: 4,
-              backgroundColor: "rgba(90,90,90,1)"
-            }}
-            onPress={onPress}
-            onFocus={onFocus}
-            style={styles.button}
-          >
-            <View style={styles.buttonContainer}>
-              <Image style={styles.image} source={{ uri: imageSource }} />
-            </View>
-          </Button>
+        <Text style={styles.episodeNumber}>{episodeNumber}</Text>
+        <Button
+          underlayColor="rgba(60,60,60,0)"
+          activeOpacity={1}
+          hasTVPreferredFocus={preferredFocus}
+          underlayStyle={{ elevation: 0, zIndex: 9999 }}
+          focusChildStyle={{
+            elevation: 4,
+            backgroundColor: "rgba(90,90,90,1)",
+            opacity: 1
+          }}
+          onPress={onPress}
+          onFocus={onFocus}
+          style={styles.button}
+        >
+          <View style={styles.buttonContainer}>
+            <Image style={styles.image} source={{ uri: imageSource }} />
+          </View>
+        </Button>
         <View style={styles.descriptionTextContainer}>
-          <Text numberOfLines={1} style={styles.title}>{title}</Text>
-          <Text numberOfLines={2} style={styles.description}>{description}</Text>
+          <Text numberOfLines={1} style={styles.title}>
+            {title}
+          </Text>
+          <Text
+            numberOfLines={2}
+            adjustsFontSizeToFit={true}
+            style={styles.description}
+          >
+            {description}
+          </Text>
         </View>
       </View>
     );
@@ -76,15 +85,16 @@ const styles = StyleSheet.create({
     width: "auto"
   },
   episodeNumber: {
-      opacity: 1,
-      color: "white",
-      fontSize: 22,
-      marginLeft: 20,
-      marginRight: 20,
-      width: 60,
-      textAlign: "center"
+    opacity: 1,
+    color: "white",
+    fontSize: 18,
+    marginLeft: 20,
+    marginRight: 20,
+    width: 40,
+    textAlign: "center"
   },
   descriptionTextContainer: {
+    flex: 1,
     justifyContent: "flex-start",
     alignItems: "flex-start",
     paddingLeft: 20,
@@ -95,8 +105,7 @@ const styles = StyleSheet.create({
   description: {
     opacity: 1,
     color: "white",
-    fontSize: 12,
-    width: winSize.width - (DISPLAY_CONST.EPISODE_ITEM.ITEM_WIDTH * 0.6 + 158)
+    fontSize: 11
   },
   title: {
     opacity: 1,
@@ -105,16 +114,17 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   buttonContainer: {
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingLeft: 8,
-    paddingRight: 8,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 5,
+    paddingRight: 5,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    opacity: 0.5
   },
   image: {
-    width: DISPLAY_CONST.EPISODE_ITEM.ITEM_WIDTH * 0.6,
-    height: DISPLAY_CONST.EPISODE_ITEM.ITEM_HEIGHT * 0.6
+    width: DISPLAY_CONST.EPISODE_ITEM.ITEM_WIDTH * 0.55,
+    height: DISPLAY_CONST.EPISODE_ITEM.ITEM_HEIGHT * 0.55
   },
   text: {
     color: "white",
@@ -122,7 +132,7 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   button: {
-    paddingTop: 13.5,
-    paddingBottom: 13.5
+    paddingTop: 8.5,
+    paddingBottom: 8.5
   }
 });

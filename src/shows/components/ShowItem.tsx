@@ -44,10 +44,11 @@ export default class ShowItem extends Component<Props> {
             { translateX: 0 }
           ],
           elevation: 4,
-          backgroundColor: "rgba(90,90,90,1)"
+          backgroundColor: "rgba(90,90,90,1)",
+          opacity: 1
         }}
         onPress={onPress}
-        onFocus={onFocus}
+        onShowUnderlay={onFocus}
         style={styles.button}
       >
         <View style={styles.container}>
@@ -60,12 +61,13 @@ export default class ShowItem extends Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingLeft: 8,
-    paddingRight: 8,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 5,
+    paddingRight: 5,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    opacity: 0.5
   },
   image: {
     width: DISPLAY_CONST.SHOW_ITEM.ITEM_WIDTH * 0.75,
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
   button: {
     paddingTop: DISPLAY_CONST.SHOW_ITEM.ITEM_HEIGHT / 3,
     paddingBottom: DISPLAY_CONST.SHOW_ITEM.ITEM_HEIGHT / 3,
-    marginLeft: 15,
-    marginRight: 15
+    marginLeft: 18,
+    marginRight: 18
   }
 });

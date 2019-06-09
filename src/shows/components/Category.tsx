@@ -8,42 +8,61 @@ interface Props {
   preferredFocus?: boolean;
   onFocus?: () => void;
   title?: string;
-  focused?: boolean;
+  selected?: boolean;
   icon?: string;
 }
 
 const Category = (props: Props) => {
-  const { onPress, preferredFocus, onFocus, focused, title, icon } = props;
+  const { onPress, preferredFocus, onFocus, selected, title, icon } = props;
   const styles = StyleSheet.create({
-    container: {
-      width: 155,
+    button: {
       height: 40,
-      alignItems: "flex-start",
-      justifyContent: "space-evenly",
-      alignSelf: "center"
+      paddingRight: 100,
+      paddingBottom: 5
+    },
+    container: {
+      flex: 1,
+      opacity: 0.3,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      borderBottomWidth: 2,
+      borderColor: "rgba(255,255,255,0)",
     },
     text: {
       fontSize: 16,
-      color: "white"
+      color: "white",
+      paddingLeft: 0,
+      paddingRight: 6,
+      height: 28,
+      lineHeight: 33
     },
     icon: {
       color: "white",
-      fontSize: 16
+      fontSize: 16,
+      paddingLeft: 0,
+      paddingRight: 6,
+      marginTop: -2,
+      marginRight: 5,
+      height: 28,
+      lineHeight: 33,
+      textAlignVertical: "center"
     }
   });
-  const stylesFocused = StyleSheet.create({
-    container: {},
+  const stylesSelected = StyleSheet.create({
+    container: {
+      opacity: 1,
+      borderColor: "rgba(255,255,255,1)"
+    },
     text: {
       textShadowColor: "rgba(255, 255, 255, 0.5)",
       textShadowOffset: { width: 0, height: 0 },
-      textShadowRadius: 10,
-      fontSize: 22
+      textShadowRadius: 10
     },
     icon: {
       textShadowColor: "rgba(255, 255, 255, 0.5)",
       textShadowOffset: { width: 0, height: 0 },
-      textShadowRadius: 10,
-      fontSize: 22
+      textShadowRadius: 10
     }
   });
   return (
@@ -52,23 +71,27 @@ const Category = (props: Props) => {
       activeOpacity={1}
       hasTVPreferredFocus={preferredFocus}
       onPress={onPress}
-      onShowUnderlay={onFocus}
+      onFocus={onFocus}
+      focusChildStyle={{
+        opacity: 1
+      }}
+      style={styles.button}
     >
       <View
         style={{
           ...styles.container,
-          ...(focused ? stylesFocused.container : {})
+          ...(selected ? stylesSelected.container : {})
         }}
       >
         {icon && (
           <Icon
             name={icon}
-            style={{ ...styles.icon, ...(focused ? stylesFocused.icon : {}) }}
+            style={{ ...styles.icon, ...(selected ? stylesSelected.icon : {}) }}
           />
         )}
         {title && (
           <Text
-            style={{ ...styles.text, ...(focused ? stylesFocused.text : {}) }}
+            style={{ ...styles.text, ...(selected ? stylesSelected.text : {}) }}
           >
             {title}
           </Text>

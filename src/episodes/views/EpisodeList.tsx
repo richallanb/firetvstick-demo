@@ -31,11 +31,12 @@ interface Props {
     isFetching: boolean;
     showData: Show;
   };
+  style?: object;
 }
 
 const EpisodeList = (props: Props) => {
   const [state, dispatch] = useStateValue();
-  const { navigation, showId, shows } = props;
+  const { navigation, showId, shows, style = {} } = props;
   const { showData, isFetching } = shows;
 
   const playVideo = async source => {
@@ -69,7 +70,8 @@ const EpisodeList = (props: Props) => {
       )}
       maxToRenderPerBatch={80}
       numColumns={1}
-      style={styles.scrollOuterContainer}
+      style={{...styles.scrollOuterContainer, ...style}}
+      contentContainerStyle={styles.scrollInnerContainer}
     />
   );
 };
@@ -81,7 +83,6 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   scrollOuterContainer: {
-    width: "90%"
   },
   container: {
     flex: 1,

@@ -1,2 +1,5 @@
-export { default as EpisodeList } from './EpisodeList';
-export { default as SeasonList } from './SeasonList';
+import { default as EpisodeListV } from './EpisodeList';
+import { default as SeasonListV } from './SeasonList';
+
+export const EpisodeList = EpisodeListV;
+export const SeasonList = SeasonListV;
