@@ -9,12 +9,12 @@ import {
   TextInput
 } from "react-native";
 import { StackActions, NavigationActions } from "react-navigation";
-import { DISPLAY } from "../constants";
-import { StateContext } from "./context";
-import { Show } from "../types";
+import { DISPLAY_CONST, DATA_CONST } from "../../constants";
+import { StateContext } from "../context";
+import { Show } from "../../types";
 import { AnyAction } from "redux";
-import * as actions from "./actions";
-import { Category } from "./Category";
+import * as actions from "../../redux-store/actions";
+import { Category } from "../components";
 
 let winSize = Dimensions.get("window");
 
@@ -68,7 +68,7 @@ class ShowHeader extends Component<Props> {
       category,
       navigation
     } = this.props;
-    const showsData = category === "search" ? shows.searchData : shows.data;
+    const showsData = category === DATA_CONST.CATEGORIES.SEARCH_CATEGORY ? shows.searchData : shows.data;
     const show = showsData[selectedShow];
     const focusedCategory = selectedCategory || category;
 
@@ -137,7 +137,9 @@ class ShowHeader extends Component<Props> {
       <View style={styles.descriptionContainer}>
         <Image style={styles.image} source={{ uri: show.wallArt }} />
         <View style={styles.descriptionTextContainer}>
-          <Text numberOfLines={1} style={styles.title}>{show.name}</Text>
+          <Text numberOfLines={1} style={styles.title}>
+            {show.name}
+          </Text>
           <Text numberOfLines={6} style={styles.description}>
             {show.description.trim()}
           </Text>
@@ -183,7 +185,7 @@ const styles = StyleSheet.create({
   },
   descriptionTextContainer: {
     justifyContent: "flex-start",
-    height: DISPLAY.SHOW_ITEM.ITEM_WIDTH * 0.9
+    height: DISPLAY_CONST.SHOW_ITEM.ITEM_WIDTH * 0.9
   },
   description: {
     opacity: 1,
@@ -199,8 +201,8 @@ const styles = StyleSheet.create({
     marginTop: -2.5
   },
   image: {
-    width: DISPLAY.SHOW_ITEM.ITEM_HEIGHT * 0.9,
-    height: DISPLAY.SHOW_ITEM.ITEM_WIDTH * 0.9
+    width: DISPLAY_CONST.SHOW_ITEM.ITEM_HEIGHT * 0.9,
+    height: DISPLAY_CONST.SHOW_ITEM.ITEM_WIDTH * 0.9
   }
 });
 

@@ -8,10 +8,10 @@ import {
   NativeEventSubscription
 } from "react-native";
 import { StackActions, NavigationEvents } from "react-navigation";
-import * as actions from "./actions";
-import ShowList from "./ShowList";
-import ShowHeader from "./ShowHeader";
+import * as actions from "../redux-store/actions";
+import { ShowList, ShowHeader } from "./views";
 import { StateProvider } from "./context";
+import { DATA_CONST } from "../constants";
 
 interface Props {
   navigation: any;
@@ -53,7 +53,7 @@ const ShowsLayout = (props: Props) => {
     <View style={styles.container}>
       <NavigationEvents
         onWillFocus={() => {
-          if (category !== "search") {
+          if (category !== DATA_CONST.CATEGORIES.SEARCH_CATEGORY) {
             initializeShows(category);
           }
         }}

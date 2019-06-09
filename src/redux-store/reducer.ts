@@ -18,7 +18,7 @@ const fetchedSearchShowData = (state, action) => ({
   ...state,
   ...action.payload,
   isFetching: false
-})
+});
 
 const updateShowData = (state, action) => {
   const { id, data } = action.payload;

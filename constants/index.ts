@@ -1,1 +1,0 @@
-export { default as DISPLAY } from './displayConstants';

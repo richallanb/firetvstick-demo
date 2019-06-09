@@ -6,8 +6,8 @@ import {
   TouchableHighlight,
   StyleSheet
 } from "react-native";
-import { Button } from "../components";
-import { DISPLAY } from "../constants";
+import { Button } from "../../components";
+import { DISPLAY_CONST } from "../../constants";
 
 interface Props {
   onPress: () => void;
@@ -38,10 +38,14 @@ export default class ShowItem extends Component<Props> {
         hasTVPreferredFocus={preferredFocus}
         underlayStyle={{ elevation: 0, zIndex: 9999 }}
         focusChildStyle={{
-          transform: [{ scaleX: 1.35 }, {scaleY: 1.35 }, {translateY: 0}, {translateX: 0}],
+          transform: [
+            { scaleX: 1.35 },
+            { scaleY: 1.35 },
+            { translateY: 0 },
+            { translateX: 0 }
+          ],
           elevation: 4,
           backgroundColor: "rgba(90,90,90,1)"
-          
         }}
         onPress={onPress}
         onFocus={onFocus}
@@ -62,11 +66,11 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     paddingRight: 8,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   image: {
-    width: DISPLAY.SHOW_ITEM.ITEM_WIDTH * 0.75,
-    height: DISPLAY.SHOW_ITEM.ITEM_HEIGHT * 0.75
+    width: DISPLAY_CONST.SHOW_ITEM.ITEM_WIDTH * 0.75,
+    height: DISPLAY_CONST.SHOW_ITEM.ITEM_HEIGHT * 0.75
   },
   text: {
     color: "white",
@@ -74,8 +78,8 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   button: {
-    paddingTop: DISPLAY.SHOW_ITEM.ITEM_HEIGHT / 3,
-    paddingBottom: DISPLAY.SHOW_ITEM.ITEM_HEIGHT / 3,
+    paddingTop: DISPLAY_CONST.SHOW_ITEM.ITEM_HEIGHT / 3,
+    paddingBottom: DISPLAY_CONST.SHOW_ITEM.ITEM_HEIGHT / 3,
     marginLeft: 15,
     marginRight: 15
   }

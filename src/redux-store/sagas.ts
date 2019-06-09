@@ -3,12 +3,12 @@ import {
   FETCH_SHOW_DATA,
   FETCH_SEASON_DATA,
   FETCH_SEARCH_SHOW_DATA
-} from "../shows/actionTypes";
+} from "./actionTypes";
 import {
   updateShowData,
   fetchedShowData,
   searchedShowData
-} from "../shows/actions";
+} from "./actions";
 import { AnyAction } from "redux";
 
 function* fetchShowData({ payload: category }: AnyAction) {

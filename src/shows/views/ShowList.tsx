@@ -12,15 +12,15 @@ import { connect } from "react-redux";
 import { StyleSheet, View, ScrollView, ActivityIndicator } from "react-native";
 import { StackActions } from "react-navigation";
 import { debounce } from "lodash";
-import * as actions from "./actions";
-import ShowItem from "./ShowItem";
-import { Show } from "../types";
-import { DISPLAY } from "../constants";
-import { useStateValue } from "./context";
+import * as actions from "../../redux-store/actions";
+import { ShowItem } from "../components";
+import { Show } from "../../types";
+import { DISPLAY_CONST, DATA_CONST } from "../../constants";
+import { useStateValue } from "../context";
 
 interface Props {
   navigation: any;
-  
+
   infiniteScrollShowData(category: string): AnyAction;
   fetchSeasonData(target: { showId: number }): AnyAction;
   category: string;
@@ -78,7 +78,7 @@ const ShowList = (props: Props) => {
   };
   const onFocusDebounce = debounce(onFocus, 100);
 
-  const showsData = category === "search" ? shows.searchData : shows.data;
+  const showsData = category === DATA_CONST.CATEGORIES.SEARCH_CATEGORY ? shows.searchData : shows.data;
   const items = showsData.map(item => (
     <ShowItem
       focused={item.id === state.selectedShow}
@@ -101,13 +101,13 @@ const ShowList = (props: Props) => {
       }
       onScroll={({ nativeEvent: { contentOffset } }) => {
         if (
-          showsData.length < DISPLAY.SHOW_LIST.MAX_SHOWS_ON_SCREEN &&
-          category !== "search"
+          showsData.length < DISPLAY_CONST.SHOW_LIST.MAX_SHOWS_ON_SCREEN &&
+          category !== DATA_CONST.CATEGORIES.SEARCH_CATEGORY
         ) {
           const scrollPrecentage = calculateScrollPercentage(contentOffset.y);
           if (
             scrollPrecentage >
-            DISPLAY.SHOW_LIST.FETCH_SHOWS_AT_SCROLL_PRECENTAGE
+            DISPLAY_CONST.SHOW_LIST.FETCH_SHOWS_AT_SCROLL_PRECENTAGE
           ) {
             infiniteScrollShowData(category);
           }
@@ -123,8 +123,11 @@ const ShowList = (props: Props) => {
         style={styles.container}
       >
         {items}
-        { isFetching && 
-        <View style={styles.infiniteScrollingContainer}><ActivityIndicator size="large" color="#00ff00" /></View>}
+        {isFetching && (
+          <View style={styles.infiniteScrollingContainer}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
+        )}
       </View>
     </ScrollView>
   );

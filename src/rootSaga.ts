@@ -1,5 +1,4 @@
-import { all } from 'redux-saga/effects';
-import * as providerSaga from './provider/sagas';
+import * as providerSaga from './redux-store/sagas';
 import combineSagas from './redux-utils/combineSagas';
 
 export default combineSagas(providerSaga);

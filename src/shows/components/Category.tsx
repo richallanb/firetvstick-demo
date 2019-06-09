@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableHighlight, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Button } from '../components'
+import { Button } from "../../components";
 
 interface Props {
   onPress?: () => void;
@@ -12,7 +12,7 @@ interface Props {
   icon?: string;
 }
 
-export const Category = (props: Props) => {
+const Category = (props: Props) => {
   const { onPress, preferredFocus, onFocus, focused, title, icon } = props;
   const styles = StyleSheet.create({
     container: {
@@ -77,3 +77,5 @@ export const Category = (props: Props) => {
     </Button>
   );
 };
+
+export default Category;
