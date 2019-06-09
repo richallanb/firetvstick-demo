@@ -78,13 +78,22 @@ const ShowList = (props: Props) => {
   };
   const onFocusDebounce = debounce(onFocus, 100);
 
-  const showsData = category === DATA_CONST.CATEGORIES.SEARCH_CATEGORY ? shows.searchData : shows.data;
+  const goToEpisodes = id => {
+    navigation.dispatch(
+      StackActions.push({
+        routeName: "Episodes",
+        params: { showId: id}
+      })
+    );
+    //fetchSeasonData({ showId: item.id })
+  }
+
+  const showsData = Object.values(category === DATA_CONST.CATEGORIES.SEARCH_CATEGORY ? shows.searchData : shows.data);
   const items = showsData.map(item => (
     <ShowItem
-      focused={item.id === state.selectedShow}
       key={item.id}
       imageSource={item.picture}
-      onPress={() => fetchSeasonData({ showId: item.id })}
+      onPress={() => goToEpisodes(item.id)}
       onFocus={() => onFocusDebounce(item.id)}
     />
   ));

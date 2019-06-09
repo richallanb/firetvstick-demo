@@ -82,9 +82,7 @@ const mapDispatchToProps = {
   ...actions
 };
 
-const mapStateToProps = state => ({
-  shows: state.shows
-});
+const mapStateToProps = () => ({});
 
 export default connect(
   mapStateToProps,

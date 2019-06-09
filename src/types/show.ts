@@ -13,6 +13,6 @@ export interface ShowCoreInformation {
 }
 
 export interface Show extends ShowDescription, ShowCoreInformation {
-  id: number;
+  id: string;
   provider: string;
 }

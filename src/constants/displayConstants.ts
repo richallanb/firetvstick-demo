@@ -8,5 +8,9 @@ export default {
     SHOW_ITEM: {
         ITEM_WIDTH: 146,
         ITEM_HEIGHT: 220
+    },
+    EPISODE_ITEM: {
+        ITEM_WIDTH: 220,
+        ITEM_HEIGHT: 146
     }
 };

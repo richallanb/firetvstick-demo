@@ -146,7 +146,7 @@ class ShowHeader extends Component<Props> {
         </View>
       </View>
     );
-    if (selectedShow === undefined || showsData.length < 1) {
+    if (selectedShow === undefined) {
       return (
         <View style={{ ...styles.container, ...this.props.style }}>
           {categoryView()}
@@ -185,12 +185,14 @@ const styles = StyleSheet.create({
   },
   descriptionTextContainer: {
     justifyContent: "flex-start",
-    height: DISPLAY_CONST.SHOW_ITEM.ITEM_WIDTH * 0.9
+    height: DISPLAY_CONST.SHOW_ITEM.ITEM_WIDTH * 0.9,
+    paddingLeft: 20,
+    paddingRight: 20
   },
   description: {
     opacity: 1,
     color: "white",
-    width: winSize.width - 260,
+    width: winSize.width - (DISPLAY_CONST.SHOW_ITEM.ITEM_HEIGHT * 0.9 + 80),
     fontSize: 12
   },
   title: {

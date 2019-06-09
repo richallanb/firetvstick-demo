@@ -15,7 +15,6 @@ interface Props {
   imageSource: string;
   title: string;
   onFocus: () => void;
-  focused: boolean;
 }
 
 export default class ShowItem extends Component<Props> {

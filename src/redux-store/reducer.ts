@@ -24,7 +24,7 @@ const updateShowData = (state, action) => {
   const { id, data } = action.payload;
   return {
     ...state,
-    data: state.data.map(show => (show.id === id ? { ...show, ...data } : show))
+    showData: data
   };
 };
 
@@ -35,8 +35,9 @@ const isFetching = state => ({
 
 export default createReducer(
   {
-    data: [],
-    searchData: [],
+    data: {},
+    showData: {},
+    searchData: {},
     isFetching: false
   },
   {

@@ -8,6 +8,7 @@ import store from "./store";
 import { WonderfulSubs } from "./provider";
 import { Provider as ProviderInterface } from "./provider/providerInterface";
 import { Easing, Animated } from "react-native";
+import { EpisodesLayout } from "./episodes";
 
 useScreens();
 
@@ -26,6 +27,9 @@ const AppNavigator = createStackNavigator(
     },
     Shows: {
       screen: ShowsLayout
+    },
+    Episodes: {
+      screen: EpisodesLayout
     }
   },
   {

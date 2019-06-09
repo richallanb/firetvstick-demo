@@ -10,9 +10,9 @@ export interface Provider {
   categories: Category[];
   getSettings(): object;
   setSettings(settings: object): object;
-  fetchShows({ type } : Category): Promise<Show[]>;
+  fetchShows({ type } : Category): Promise<{[id: string]: Show}>;
   fetchShowDecription(target: { showId: number }): Promise<Show>;
-  searchShows(target: {query: string}): Promise<Show[]>;
+  searchShows(target: {query: string}): Promise<{[id: string]: Show}>;
   fetchSeasons(target: { showId: number }): Promise<Show>;
   fetchEpisodes(target: { showId: number; seasonId: number }): Promise<Show>;
   fetchEpisodeDescription(target: {
