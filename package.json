@@ -13,6 +13,7 @@
     "@types/react-test-renderer": "^16.8.1",
     "@types/redux-logger": "^3.0.7",
     "cheerio-without-node-native": "0.20.2",
+    "lodash": "^4.17.11",
     "react": "^16.8.6",
     "react-native": "^0.59.9",
     "react-native-cookies": "^3.3.0",
