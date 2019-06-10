@@ -11,6 +11,7 @@ import {
   searchedShowData
 } from "./actions";
 import { AnyAction } from "redux";
+import { StackActions } from "react-navigation";
 
 function* fetchShowData({ payload: category }: AnyAction) {
   const data = yield global
@@ -36,6 +37,10 @@ function* fetchSourceData({
     .__provider()
     .fetchSources({ showId, seasonId, episodeId });
   console.log(source.url);
+  yield put(StackActions.push({
+    routeName: "Player",
+    params: { uri: source.url }
+  }))
   yield put(updateShowData({ showId, data }));
 }
 
