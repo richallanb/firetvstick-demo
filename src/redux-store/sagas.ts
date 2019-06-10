@@ -2,7 +2,8 @@ import { put, takeLeading, select } from "redux-saga/effects";
 import {
   FETCH_SHOW_DATA,
   FETCH_SEASON_DATA,
-  FETCH_SEARCH_SHOW_DATA
+  FETCH_SEARCH_SHOW_DATA,
+  FETCH_SOURCE_DATA
 } from "./actionTypes";
 import {
   updateShowData,
@@ -28,6 +29,16 @@ function* fetchSearchData({ payload: { query } }: AnyAction) {
   yield put(searchedShowData({ searchData }));
 }
 
+function* fetchSourceData({
+  payload: { showId, seasonId, episodeId }
+}: AnyAction) {
+  const { data, source } = yield global
+    .__provider()
+    .fetchSources({ showId, seasonId, episodeId });
+  console.log(source.url);
+  yield put(updateShowData({ showId, data }));
+}
+
 export function* fetchShowEpisodesAsync() {
   yield takeLeading(FETCH_SEASON_DATA, fetchSeasonData);
 }
@@ -38,4 +49,8 @@ export function* fetchShowDataAsync() {
 
 export function* fetchSearchDataAsync() {
   yield takeLeading(FETCH_SEARCH_SHOW_DATA, fetchSearchData);
+}
+
+export function* fetchSourceDataAsync() {
+  yield takeLeading(FETCH_SOURCE_DATA, fetchSourceData);
 }

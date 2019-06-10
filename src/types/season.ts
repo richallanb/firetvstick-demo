@@ -1,9 +1,14 @@
 import { Episode } from "./episode";
 
-interface Season {
-  id: number;
-  seasonNumber: number;
-  episodes: Episode[];
+export enum SeasonType {
+  episodes = 'episodes',
+  seasons = 'seasons',
+  film = 'film'
 }
 
-export default Season;
+export interface Season {
+  id: number;
+  seasonName: string;
+  type:SeasonType
+  episodes: Episode[];
+}

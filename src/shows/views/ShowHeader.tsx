@@ -130,6 +130,7 @@ class ShowHeader extends Component<Props> {
               }}
               onBlur={() => updateSearchBarVisibility(false)}
               autoFocus={true}
+              style={styles.searchBar}
             />
           )}
         </View>
@@ -207,6 +208,9 @@ const styles = StyleSheet.create({
   image: {
     width: DISPLAY_CONST.SHOW_ITEM.ITEM_HEIGHT * 0.9,
     height: DISPLAY_CONST.SHOW_ITEM.ITEM_WIDTH * 0.9
+  },
+  searchBar: {
+    display: "none"
   }
 });
 

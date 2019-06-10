@@ -9,7 +9,9 @@ import {
   FETCHED_SEASON_DATA,
   INFINITE_SCROLL_FETCH_SHOW_DATA,
   FETCH_SEARCH_SHOW_DATA,
-  FETCHED_SEARCH_SHOW_DATA
+  FETCHED_SEARCH_SHOW_DATA,
+  FETCH_SOURCE_DATA,
+  FETCHED_SOURCE_DATA
 } from "./actionTypes";
 import { Action } from "../redux-utils";
 
@@ -62,8 +64,8 @@ export function infiniteScrollShowData(category: string): Action<string> {
 }
 
 export function fetchEpisodeData(target: {
-  showId: number;
-}): Action<{ id: number }> {
+  showId: string;
+}): Action<{ id: string }> {
   const { showId: id } = target;
   return {
     type: FETCH_EPISODE_DATA,
@@ -78,8 +80,8 @@ export function fetchedEpisodeData(): Action {
 }
 
 export function fetchSeasonData(target: {
-  showId: number;
-}): Action<{ id: number }> {
+  showId: string;
+}): Action<{ id: string }> {
   const { showId: id } = target;
   return {
     type: FETCH_SEASON_DATA,
@@ -93,10 +95,22 @@ export function fetchedSeasonData(): Action {
   };
 }
 
+export function fetchSourceData(target: {
+  showId: string;
+  seasonId: number;
+  episodeId: number;
+}): Action<{ showId: string; seasonId: number; episodeId: number }> {
+  const { showId, seasonId, episodeId } = target;
+  return {
+    type: FETCH_SOURCE_DATA,
+    payload: { showId, seasonId, episodeId }
+  };
+}
+
 export function updateShowData(target: {
-  showId: number;
+  showId: string;
   data: object;
-}): Action<{ id: number; data: object }> {
+}): Action<{ id: string; data: object }> {
   const { showId: id, data } = target;
   return {
     type: UPDATE_SHOW_DATA,

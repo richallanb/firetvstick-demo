@@ -1,6 +1,7 @@
 import {
   Show,
-  Category
+  Category,
+  Source
 } from "../types";
 
 
@@ -11,18 +12,18 @@ export interface Provider {
   getSettings(): object;
   setSettings(settings: object): object;
   fetchShows({ type } : Category): Promise<{[id: string]: Show}>;
-  fetchShowDecription(target: { showId: number }): Promise<Show>;
+  fetchShowDecription(target: { showId: string }): Promise<Show>;
   searchShows(target: {query: string}): Promise<{[id: string]: Show}>;
-  fetchSeasons(target: { showId: number }): Promise<Show>;
-  fetchEpisodes(target: { showId: number; seasonId: number }): Promise<Show>;
+  fetchSeasons(target: { showId: string }): Promise<Show>;
+  fetchEpisodes(target: { showId: string; seasonId: number }): Promise<Show>;
   fetchEpisodeDescription(target: {
-    showId: number;
+    showId: string;
     seasonId: number;
     episodeId: number;
   }): Promise<Show>;
   fetchSources(target: {
-    showId: number;
+    showId: string;
     seasonId: number;
     episodeId: number;
-  }): Promise<Show>;
+  }): Promise<{data: Show, source: Source}>;
 };

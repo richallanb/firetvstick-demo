@@ -20,7 +20,7 @@ const testData = [
       "https://static.vrv.co/imgsrv/display/thumbnail/1200x675/catalog/crunchyroll/4085817886f2fbb9cacfb975217bbcc2.jpg",
     seasons: [
       {
-        seasonNumber: 1,
+        seasonName: 1,
         episodes: [
           {
             name:

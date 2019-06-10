@@ -56,7 +56,7 @@ export default class EpisodeItem extends Component<Props> {
           style={styles.button}
         >
           <View style={styles.buttonContainer}>
-            <Image style={styles.image} source={{ uri: imageSource }} />
+            <Image style={styles.image} source={imageSource && { uri: imageSource }} />
           </View>
         </Button>
         <View style={styles.descriptionTextContainer}>

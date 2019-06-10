@@ -31,12 +31,18 @@ interface Props {
     isFetching: boolean;
     showData: Show;
   };
+  fetchSourceData(target: {
+    showId: string;
+    seasonId: number;
+    episodeId: number;
+  }): AnyAction;
   style?: object;
 }
 
 const EpisodeList = (props: Props) => {
   const [state, dispatch] = useStateValue();
-  const { navigation, showId, shows, style = {} } = props;
+  const { navigation, shows, style = {}, fetchSourceData } = props;
+  const { selectedSeason } = state;
   const { showData, isFetching } = shows;
 
   const playVideo = async source => {
@@ -52,8 +58,8 @@ const EpisodeList = (props: Props) => {
   const episodeData =
     (showData &&
       showData.seasons &&
-      showData.seasons[0] &&
-      showData.seasons[0].episodes) ||
+      showData.seasons[selectedSeason] &&
+      showData.seasons[selectedSeason].episodes) ||
     [];
 
   return (
@@ -66,11 +72,18 @@ const EpisodeList = (props: Props) => {
           description={item.description}
           episodeNumber={item.episodeNumber}
           imageSource={item.picture}
+          onPress={() =>
+            fetchSourceData({
+              showId: showData.id,
+              seasonId: selectedSeason,
+              episodeId: item.id
+            })
+          }
         />
       )}
       maxToRenderPerBatch={80}
       numColumns={1}
-      style={{...styles.scrollOuterContainer, ...style}}
+      style={{ ...styles.scrollOuterContainer, ...style }}
       contentContainerStyle={styles.scrollInnerContainer}
     />
   );
@@ -83,8 +96,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingBottom: 5
   },
-  scrollOuterContainer: {
-  },
+  scrollOuterContainer: {},
   container: {
     flex: 1,
     flexDirection: "row",
