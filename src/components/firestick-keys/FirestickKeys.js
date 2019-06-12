@@ -9,19 +9,19 @@ export default class FirestickKeys extends Component {
   throttle(callback, wait, immediate = false) {
     this.timer = null;
     let initialCall = true;
-  
+
     return () => {
       const callNow = immediate && initialCall;
       const next = () => {
         callback.apply(this, arguments);
         this.timer = null;
       };
-  
+
       if (callNow) {
         initialCall = false;
         next();
       }
-  
+
       if (!this.timer) {
         this.timer = setTimeout(next, wait);
       }
@@ -31,15 +31,20 @@ export default class FirestickKeys extends Component {
   buildProps = () => {
     return Object.keys(this.props).reduce((mappings, propName) => {
       if (KeyMappings[propName] && typeof this.props[propName] === "function") {
-        const key = KeyMappings[propName].holdDown
-          ? `${KeyMappings[propName].keyCode}_hold`
-          : KeyMappings[propName].keyCode;
+        const holdDown = KeyMappings[propName].holdDown;
+        const keyCode = KeyMappings[propName].keyCode;
+        const key = holdDown ? `${keyCode}_hold` : keyCode;
 
+        let action = this.props[propName];
+
+        if (holdDown) {
+          action = this.throttle(action, this.props.keyPressTimeOut, true);
+        }
         return {
           ...mappings,
           [key]: {
-            action: this.props[propName],
-            holdDown: KeyMappings[propName].holdDown
+            action,
+            holdDown
           }
         };
       }
@@ -62,7 +67,7 @@ export default class FirestickKeys extends Component {
           mappedProps[keyCode].action();
         }
         if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
-          clearTimeout(this.timer);
+          this.timer = clearTimeout(this.timer);
           throttledKeyDown = undefined;
         }
       }
@@ -77,11 +82,7 @@ export default class FirestickKeys extends Component {
           } else {
             throttledKeyDown = {
               keyCode,
-              action: this.throttle(
-                mappedProps[heldKeyCode].action,
-                this.props.keyPressTimeOut,
-                true
-              )
+              action: mappedProps[heldKeyCode].action
             };
           }
         }
@@ -93,6 +94,10 @@ export default class FirestickKeys extends Component {
     if (this.listenerKeyUp) {
       this.listenerKeyUp.remove();
       delete this.listenerKeyUp;
+    }
+    if (this.listenerKeyDown) {
+      this.listenerKeyDown.remove();
+      delete this.listenerKeyDown;
     }
   };
 
