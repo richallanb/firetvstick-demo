@@ -1,10 +1,12 @@
-import {connect} from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import {
   createReduxContainer,
-  createNavigationReducer,
-  createReactNavigationReduxMiddleware
+  createNavigationReducer
 } from "react-navigation-redux-helpers";
+import { StackActions } from "react-navigation";
+import { BackHandler } from "react-native";
 import { Player } from "./player";
 import { ShowsLayout } from "./shows";
 import { EpisodesLayout } from "./episodes";
@@ -42,10 +44,47 @@ export const router = createStackNavigator(
 );
 
 const App = createReduxContainer(router);
-const mapStateToProps = (state) => ({
-  state: state.navigation,
+const mapStateToProps = state => ({
+  state: state.navigation
 });
-export const RouterComponent = connect(mapStateToProps)(App);
+const NavigationRouterComponent = connect(mapStateToProps)(App);
 //export const RouterComponent = createAppContainer(router);
+class RouterComponentWrapper extends Component {
+  backHandler;
+
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      return this.handleBackButton();
+    });
+  }
+
+  handleBackButton = () => {
+    const { dispatch, state: navigation } = this.props;
+    if (navigation.index > 0) {
+      dispatch(
+        StackActions.pop({
+          n: 1
+        })
+      );
+      return true;
+    }
+    return false;
+  };
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
+
+  render() {
+    return <NavigationRouterComponent />;
+  }
+}
+
+const mapDispatchToProps = dispatch => ({ dispatch });
+
+export const RouterComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RouterComponentWrapper);
 
 export const navReducer = createNavigationReducer(router);
