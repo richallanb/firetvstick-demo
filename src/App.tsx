@@ -21,7 +21,6 @@ const store = buildStore(navReducer);
 
 export default class App extends Component {
   render() {
-    console.log(RouterComponent);
     return (
       <Provider store={store}>
         <RouterComponent />

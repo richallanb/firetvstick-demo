@@ -36,7 +36,6 @@ function* fetchSourceData({
   const { data, source } = yield global
     .__provider()
     .fetchSources({ showId, seasonId, episodeId });
-  console.log(source.url);
   yield put(StackActions.push({
     routeName: "Player",
     params: { uri: source.url }

@@ -48,16 +48,6 @@ const SeasonList = (props: Props) => {
     });
   };
 
-  const playVideo = async source => {
-    console.log(source);
-    navigation.dispatch(
-      StackActions.push({
-        routeName: "Player",
-        params: { uri: source.src }
-      })
-    );
-  };
-
   const seasonData = (showData && showData.seasons) || [];
 
   const seasonDataWithKey = seasonData.map(season => ({

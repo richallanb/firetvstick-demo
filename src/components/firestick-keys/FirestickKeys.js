@@ -62,7 +62,6 @@ export default class FirestickKeys extends Component {
     this.listenerKeyUp = DeviceEventEmitter.addListener(
       "onKeyUp",
       ({ keyCode = 0 }) => {
-        console.log("onKeyUp", keyCode);
         if (mappedProps && mappedProps[keyCode]) {
           mappedProps[keyCode].action();
         }
@@ -102,7 +101,6 @@ export default class FirestickKeys extends Component {
   };
 
   componentDidMount() {
-    console.log("eventHandler");
     this._enableEventHandler();
   }
 

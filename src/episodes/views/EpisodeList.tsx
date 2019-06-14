@@ -45,16 +45,6 @@ const EpisodeList = (props: Props) => {
   const { selectedSeason } = state;
   const { showData, isFetching } = shows;
 
-  const playVideo = async source => {
-    console.log(source);
-    navigation.dispatch(
-      StackActions.push({
-        routeName: "Player",
-        params: { uri: source.src }
-      })
-    );
-  };
-
   const episodeData =
     (showData &&
       showData.seasons &&

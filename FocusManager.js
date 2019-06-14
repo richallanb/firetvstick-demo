@@ -27,7 +27,6 @@ export default class FocusManager extends Component {
     } else {
       this.keyMatrix = buildDefaultMatrix();
     }
-    console.log(this.keyMatrix);
   }
 
   componentDidMount() {
@@ -83,13 +82,11 @@ export default class FocusManager extends Component {
 
   _handleUnfocus = () => {
     const selectedElement = this._selectElement();
-    console.log(selectedElement);
     selectedElement && selectedElement.props.onBlur && selectedElement.props.onBlur();
   };
 
   _handleFocus = () => {
     const selectedElement = this._selectElement();
-    console.log(selectedElement);
     selectedElement && selectedElement.props.onFocus && selectedElement.props.onFocus();
   };
 
@@ -110,7 +107,6 @@ export default class FocusManager extends Component {
   render() {
     const { focusX, focusY, childMap } = this.state;
     const focusKey = this.keyMatrix[focusY][focusX];
-    console.log(focusKey);
     const { children } = this.props;
     return (
       <View>

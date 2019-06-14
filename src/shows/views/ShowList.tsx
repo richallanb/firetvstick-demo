@@ -55,23 +55,6 @@ const ShowList = (props: Props) => {
     });
   };
 
-  const getSources = async sourceFetch => {
-    const response = await sourceFetch();
-    const result = await response.json();
-    return result.urls && result.urls[result.urls.length - 1];
-  };
-
-  const playVideo = async sourceFetch => {
-    const source = await getSources(sourceFetch);
-    console.log(source);
-    navigation.dispatch(
-      StackActions.push({
-        routeName: "Player",
-        params: { uri: source.src }
-      })
-    );
-  };
-
   const onFocus = id => {
     resetCategory();
     setSelectedShow(id);
