@@ -1,11 +1,15 @@
 import React from "react";
 import { Component } from "react";
-import { StyleSheet, View, Text, Animated } from "react-native";
+import { StyleSheet, View, Text, Animated, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import VideoPlayer from "react-native-video";
 import { FirestickKeys } from "../components";
 import { number } from "prop-types";
 
+const prettyTime = duration => new Date(1000 * duration)
+.toISOString()
+.substr(11, 8)
+.replace(/^(00:0)|^(00:)/, "");
 interface VideoProps {
   duration: number;
   currentTime: number;
@@ -13,9 +17,18 @@ interface VideoProps {
 const VideoProgress = (props: VideoProps) => {
   const { duration, currentTime } = props;
   const widthPercentage = (currentTime / duration) * 100;
-  console.log(widthPercentage);
+  const prettyCurrentTime = prettyTime(currentTime);
+  const prettyDuration = prettyTime(duration);
   return (
-    <View style={{ ...styles2.videoProgress, width: `${widthPercentage}%` }} />
+    <View style={styles2.videoProgressContainer}>
+      <View
+        style={{ ...styles2.videoProgress, width: `${widthPercentage}%` }}
+      />
+      <View style={styles2.videoProgressTimeContainer}>
+        <Text style={styles2.videoProgressTimeText}>{prettyCurrentTime}</Text>
+        <Text style={styles2.videoProgressTimeText}>{prettyDuration}</Text>
+      </View>
+    </View>
   );
 };
 
@@ -23,7 +36,21 @@ const styles2 = StyleSheet.create({
   videoProgress: {
     backgroundColor: "rgba(255,0,0,0.5)",
     height: 4,
-    alignSelf: "flex-start"
+    alignSelf: "flex-start",
+    borderRightWidth: 1,
+    borderColor: "white"
+  },
+  videoProgressContainer: {},
+  videoProgressTimeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  videoProgressTimeText: {
+    color: "white",
+    marginTop: 2,
+    marginLeft: 2,
+    marginRight: 2,
+    fontSize: 12
   }
 });
 
@@ -196,7 +223,7 @@ export default class Player extends Component<Props, State> {
             });
             this.displayPopup({
               icon: "backward",
-              text: `${Math.abs(reverseAmt)} sec`,
+              text: prettyTime(Math.abs(reverseAmt)),
               autoDismiss: false
             });
           }}
@@ -211,7 +238,7 @@ export default class Player extends Component<Props, State> {
             this.setState({ fastReverse: 0 });
             this.displayPopup({
               icon: "backward",
-              text: `${Math.abs(reverseAmt)} sec`
+              text: prettyTime(Math.abs(reverseAmt))
             });
           }}
           onRightHold={() => {
@@ -223,7 +250,7 @@ export default class Player extends Component<Props, State> {
             });
             this.displayPopup({
               icon: "forward",
-              text: `${Math.abs(forwardAmt)} sec`,
+              text: prettyTime(forwardAmt),
               autoDismiss: false
             });
           }}
@@ -238,7 +265,7 @@ export default class Player extends Component<Props, State> {
             this.setState({ fastForward: 0 });
             this.displayPopup({
               icon: "forward",
-              text: `${Math.abs(forwardAmt)} sec`
+              text: prettyTime(forwardAmt)
             });
           }}
         />
@@ -287,10 +314,5 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 25,
     marginRight: 10
-  },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10
   }
 });
