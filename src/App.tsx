@@ -8,8 +8,6 @@ import { buildStore } from "./store";
 
 useScreens();
 
-const provider = new WonderfulSubs();
-
 global.__provider = (): ProviderInterface => provider;
 const router = require("./router");
 const { RouterComponent, navReducer } = router;
