@@ -11,7 +11,7 @@ import {
   FETCH_SEARCH_SHOW_DATA,
   FETCHED_SEARCH_SHOW_DATA,
   FETCH_SOURCE_DATA,
-  FETCHED_SOURCE_DATA
+  FETCH_NEXT_EPISODE
 } from "./actionTypes";
 import { Action } from "../redux-utils";
 
@@ -76,6 +76,18 @@ export function fetchEpisodeData(target: {
 export function fetchedEpisodeData(): Action {
   return {
     type: FETCHED_EPISODE_DATA
+  };
+}
+
+export function fetchNextEpisode(current: {
+  showId: string;
+  seasonId: number;
+  episodeId: number;
+}): Action<{ showId: string; seasonId: number; episodeId: number }> {
+  const { showId, seasonId, episodeId } = current;
+  return {
+    type: FETCH_NEXT_EPISODE,
+    payload: { showId, seasonId, episodeId }
   };
 }
 

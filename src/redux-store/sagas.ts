@@ -11,7 +11,7 @@ import {
   searchedShowData
 } from "./actions";
 import { AnyAction } from "redux";
-import { StackActions } from "react-navigation";
+import { NavigationActions } from "react-navigation";
 
 function* fetchShowData({ payload: category }: AnyAction) {
   const data = yield global
@@ -33,12 +33,14 @@ function* fetchSearchData({ payload: { query } }: AnyAction) {
 function* fetchSourceData({
   payload: { showId, seasonId, episodeId }
 }: AnyAction) {
+  // let navigationState = yield select((state) => state.navigation);
   const { data, source } = yield global
     .__provider()
     .fetchSources({ showId, seasonId, episodeId });
-  yield put(StackActions.push({
+  yield put(NavigationActions.navigate({
     routeName: "Player",
-    params: { uri: source.url }
+    key: "Player",
+    params: { uri: source.url, showId, seasonId, episodeId }
   }))
   yield put(updateShowData({ showId, data }));
 }

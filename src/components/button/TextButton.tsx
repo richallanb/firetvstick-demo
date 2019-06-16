@@ -78,6 +78,7 @@ const TextButton = (props: Props) => {
     if (icon) {
       elements.push(
         <Icon
+          key="icon"
           name={icon}
           style={{ ...styles.icon, ...(selected ? stylesSelected.icon : {}) }}
         />
@@ -86,6 +87,7 @@ const TextButton = (props: Props) => {
     if (title) {
       elements.push(
         <Text
+          key="text"
           style={{ ...styles.text, ...(selected ? stylesSelected.text : {}) }}
         >
           {title}
