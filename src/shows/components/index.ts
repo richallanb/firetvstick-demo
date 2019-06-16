@@ -1,5 +1,4 @@
-import { default as CategoryV} from './Category';
-import { default as ShowItemV} from './ShowItem';
+import { default as Category } from "./Category";
+import { default as ShowItem } from "./ShowItem";
 
-export const Category = CategoryV;
-export const ShowItem = ShowItemV;
+export { Category, ShowItem };

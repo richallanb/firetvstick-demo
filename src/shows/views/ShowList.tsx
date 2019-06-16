@@ -65,13 +65,20 @@ const ShowList = (props: Props) => {
     navigation.dispatch(
       StackActions.push({
         routeName: "Episodes",
-        params: { showId: id}
+        params: { showId: id }
       })
     );
     //fetchSeasonData({ showId: item.id })
-  }
+  };
 
-  const showsData = Object.values(category === DATA_CONST.CATEGORIES.SEARCH_CATEGORY ? shows.searchData : shows.data);
+  const showsData =
+    (shows && category && 
+      Object.values(
+        category === DATA_CONST.CATEGORIES.SEARCH_CATEGORY
+          ? shows.searchData
+          : shows.data
+      )) ||
+    [];
   const items = showsData.map(item => (
     <ShowItem
       key={item.id}
@@ -82,8 +89,11 @@ const ShowList = (props: Props) => {
   ));
 
   const calculateScrollPercentage = (scrollPosition: number) => {
-    const scrollPositionWithOffset = this.scrollWindowSize + scrollPosition;
-    return scrollPositionWithOffset / this.windowHeight;
+    if (this.windowHeight && this.scrollWindowSize) { 
+      const scrollPositionWithOffset = this.scrollWindowSize + scrollPosition;
+      return scrollPositionWithOffset / this.windowHeight;
+    }
+    return 0;
   };
 
   return (
@@ -94,6 +104,7 @@ const ShowList = (props: Props) => {
       onScroll={({ nativeEvent: { contentOffset } }) => {
         if (
           showsData.length < DISPLAY_CONST.SHOW_LIST.MAX_SHOWS_ON_SCREEN &&
+          category && 
           category !== DATA_CONST.CATEGORIES.SEARCH_CATEGORY
         ) {
           const scrollPrecentage = calculateScrollPercentage(contentOffset.y);

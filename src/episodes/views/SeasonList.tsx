@@ -12,17 +12,12 @@ import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
-  ScrollView,
-  ActivityIndicator,
   FlatList,
   Text
 } from "react-native";
-import { StackActions } from "react-navigation";
-import { debounce } from "lodash";
 import * as actions from "../../redux-store/actions";
 import { SeasonItem } from "../components";
 import { Show } from "../../types";
-import { DISPLAY_CONST, DATA_CONST } from "../../constants";
 import { useStateValue } from "../context";
 
 interface Props {
@@ -68,7 +63,7 @@ const SeasonList = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      {selectedSeasonData && <Text style={styles.text}>{selectedSeasonData.type}</Text>}
+      {selectedSeasonData ? <Text style={styles.text}>{selectedSeasonData.type}</Text> : <View />}
       <FlatList
         data={seasonDataWithKey}
         renderItem={seasonItemRenderer}

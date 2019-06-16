@@ -16,10 +16,6 @@ interface Props {
 
 const EpisodeLayout = props => {
   const { navigation, fetchSeasonData } = props;
-  const showId = navigation.getParam(
-    "showId",
-    global.__provider().categories[0].type
-  );
   return (
     <View style={styles.container}>
       <NavigationEvents

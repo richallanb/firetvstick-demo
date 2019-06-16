@@ -10,17 +10,26 @@ const navMiddleware = createReactNavigationReduxMiddleware(
   state => state.navigation
 );
 const sagaMiddleware = createSagaMiddleware();
+let storeMiddleware = [
+  middleware,
+  navMiddleware,
+  sagaMiddleware
+];
+if (__DEV__) {
+  storeMiddleware = [logger, ...storeMiddleware];
+}
+
 let store;
 export const buildStore = navigation => {
   store = createStore(
     rootReducer(navigation),
-    applyMiddleware(logger, middleware, navMiddleware, sagaMiddleware)
+    applyMiddleware(...storeMiddleware)
   );
   sagaMiddleware.run(rootSaga);
   return store;
 };
 
-if (module.hot) {
+if (__DEV__ && module.hot) {
   module.hot.accept(() => {
     const nextRootReducer = require("./rootReducer").default;
     store.replaceReducer(nextRootReducer);

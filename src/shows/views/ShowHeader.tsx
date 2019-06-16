@@ -8,7 +8,7 @@ import {
   Dimensions,
   TextInput
 } from "react-native";
-import { StackActions, NavigationActions } from "react-navigation";
+import { NavigationActions } from "react-navigation";
 import { debounce } from 'lodash';
 import { DISPLAY_CONST, DATA_CONST } from "../../constants";
 import { StateContext } from "../context";
@@ -53,13 +53,6 @@ class ShowHeader extends Component<Props> {
 
     const onFocusDebounce = debounce(onFocus, 100);
 
-    const setSelectedCategory = category => {
-      dispatch({
-        type: "SET_SELECTED_CATEGORY",
-        payload: category
-      });
-    };
-
     const updateSearchBarVisibility = (visible: boolean) => {
       dispatch({
         type: "UPDATE_SEARCH_BAR_VISIBILITY",
@@ -67,23 +60,25 @@ class ShowHeader extends Component<Props> {
       });
     };
 
-    const { selectedShow, selectedCategory, searchBarVisible } = state;
+    const { selectedShow, searchBarVisible } = state;
     const {
       shows,
-      initializeShows,
       searchShowData,
       category,
       navigation
     } = this.props;
-    const showsData = category === DATA_CONST.CATEGORIES.SEARCH_CATEGORY ? shows.searchData : shows.data;
-    const show = showsData[selectedShow];
+    const showsData =
+      (shows &&
+        category &&
+        (category === DATA_CONST.CATEGORIES.SEARCH_CATEGORY
+          ? shows.searchData
+          : shows.data)) ||
+      [];
+    const show = showsData && showsData[selectedShow];
     const categorySelection = category;
 
-    const updateCategory = (newCategory, jumpTo) => {
+    const updateCategory = newCategory => {
       if (category != newCategory) {
-        // if (jumpTo) {
-        //   initializeShows(newCategory);
-        // }
         navigation.dispatch(
           NavigationActions.navigate({
             routeName: "Shows",
@@ -103,7 +98,7 @@ class ShowHeader extends Component<Props> {
             key={type}
             title={name}
             onFocus={onFocusDebounce}
-            onPress={() => updateCategory(type, true)}
+            onPress={() => updateCategory(type)}
             selected={type === categorySelection}
           />
         ));
@@ -116,22 +111,26 @@ class ShowHeader extends Component<Props> {
             icon={DATA_CONST.CATEGORIES.SEARCH_CATEGORY}
             title={"Search"}
             onFocus={onFocusDebounce}
-            selected={DATA_CONST.CATEGORIES.SEARCH_CATEGORY === categorySelection}
+            selected={
+              DATA_CONST.CATEGORIES.SEARCH_CATEGORY === categorySelection
+            }
             onPress={() => updateSearchBarVisibility(true)}
           />
-          {searchBarVisible && (
+          {searchBarVisible ? (
             <TextInput
               placeholder="Search"
               onSubmitEditing={({ nativeEvent: { text: query } }) => {
                 if (query && query.length > 0) {
                   searchShowData(query);
-                  updateCategory(DATA_CONST.CATEGORIES.SEARCH_CATEGORY, false);
+                  updateCategory(DATA_CONST.CATEGORIES.SEARCH_CATEGORY);
                 }
               }}
               onBlur={() => updateSearchBarVisibility(false)}
               autoFocus={true}
               style={styles.searchBar}
             />
+          ) : (
+            <View />
           )}
         </View>
       );
@@ -149,7 +148,7 @@ class ShowHeader extends Component<Props> {
         </View>
       </View>
     );
-    if (selectedShow === undefined) {
+    if (!show || selectedShow === undefined) {
       return (
         <View style={{ ...styles.container, ...this.props.style }}>
           {categoryView()}

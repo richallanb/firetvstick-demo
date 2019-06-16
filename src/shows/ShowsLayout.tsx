@@ -27,7 +27,7 @@ const ShowsLayout = (props: Props) => {
     <View style={styles.container}>
       <NavigationEvents
         onWillFocus={() => {
-          if (category !== DATA_CONST.CATEGORIES.SEARCH_CATEGORY) {
+          if (category && category !== DATA_CONST.CATEGORIES.SEARCH_CATEGORY) {
             initializeShows(category);
           }
         }}

@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, TouchableHighlight, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Button } from ".";
 
 interface Props {
   onPress?: () => void;
@@ -73,16 +72,39 @@ const TextButton = (props: Props) => {
       textShadowRadius: 10
     }
   });
+
+  const theFiller = (icon, title, selected) => {
+    let elements = [];
+    if (icon) {
+      elements.push(
+        <Icon
+          name={icon}
+          style={{ ...styles.icon, ...(selected ? stylesSelected.icon : {}) }}
+        />
+      );
+    }
+    if (title) {
+      elements.push(
+        <Text
+          style={{ ...styles.text, ...(selected ? stylesSelected.text : {}) }}
+        >
+          {title}
+        </Text>
+      );
+    }
+    if (elements.length > 0) {
+      return elements;
+    }
+    return <View />;
+  };
+
   return (
-    <Button
+    <TouchableHighlight
       underlayColor="rgba(0,0,0,0)"
       activeOpacity={1}
       hasTVPreferredFocus={preferredFocus}
       onPress={onPress}
       onShowUnderlay={onFocus}
-      focusChildStyle={{
-        opacity: 1
-      }}
       style={{ ...styles.button, ...style }}
     >
       <View
@@ -91,21 +113,9 @@ const TextButton = (props: Props) => {
           ...(selected ? stylesSelected.container : {})
         }}
       >
-        {icon && (
-          <Icon
-            name={icon}
-            style={{ ...styles.icon, ...(selected ? stylesSelected.icon : {}) }}
-          />
-        )}
-        {title && (
-          <Text
-            style={{ ...styles.text, ...(selected ? stylesSelected.text : {}) }}
-          >
-            {title}
-          </Text>
-        )}
+        {theFiller(icon, title, selected)}
       </View>
-    </Button>
+    </TouchableHighlight>
   );
 };
 
