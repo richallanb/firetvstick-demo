@@ -12,7 +12,7 @@ import { DATA_CONST } from "../constants";
 function goGetShowData(state, { payload: category }, infiniteScroll = false) {
   switch (category) {
     case DATA_CONST.CATEGORIES.SEARCH_CATEGORY:
-      return;
+      return [];
     case DATA_CONST.CATEGORIES.BOOKMARKS_CATEGORY:
       return fetchShowData({category, infiniteScroll});
     default:
