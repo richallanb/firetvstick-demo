@@ -21,7 +21,7 @@ public class MainActivity extends ReactFragmentActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "FirestickDemo";
+    return "React Native Video Streamer";
   }
 
   @Override // <--- Add this method if you want to react to keyDown

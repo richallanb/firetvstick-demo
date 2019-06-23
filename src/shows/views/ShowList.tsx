@@ -97,6 +97,7 @@ const ShowList = (props: Props) => {
       onLayout={({ nativeEvent: { layout } }) =>
         (this.scrollWindowSize = layout.height)
       }
+      removeClippedSubviews={false}
       onScroll={({ nativeEvent: { contentOffset } }) => {
         if (
           showsData.length < global.__provider().maxShowsToFetch &&
@@ -151,6 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(36,36,33)"
   },
   infiniteScrollingContainer: {
+    marginTop: 20,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
