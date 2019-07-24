@@ -61,7 +61,6 @@ const SeasonList = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      {selectedSeasonData ? <Text style={styles.text}>{selectedSeasonData.type}</Text> : <View />}
       <FlatList
         data={seasonDataWithKey}
         renderItem={seasonItemRenderer}
@@ -69,6 +68,7 @@ const SeasonList = (props: Props) => {
         style={{ ...styles.scrollOuterContainer, ...style }}
         contentContainerStyle={styles.scrollInnerContainer}
         showsVerticalScrollIndicator={false}
+        horizontal={true}
       />
     </View>
   );
@@ -80,12 +80,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingLeft: 10,
     paddingRight: 10,
-    paddingBottom: 10,
-    marginTop: 20
+    paddingBottom: 5,
+    paddingTop: 10
   },
   scrollOuterContainer: {},
   container: {
-    paddingTop: 18,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgb(30,30,25)",
