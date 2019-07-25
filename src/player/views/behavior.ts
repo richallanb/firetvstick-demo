@@ -3,6 +3,8 @@ import { StackActions } from "react-navigation";
 import * as reactActions from "../actions";
 import { findNextEpisode, findEpisode } from "../../show-utils";
 
+const NEXT_EPISODE_POPUP_STOPWATCH = 30
+
 const setEpisodeWatched = function(watched) {
     const { showId, seasonId, episodeId } = this.props;
     (async () => {
@@ -53,7 +55,7 @@ export const onLoad = function({ duration, naturalSize }) {
         popoverRef
     } = this.props;
     const [_, dispatch] = this.context;
-    const episode = seasonId && episodeId && findEpisode({
+    const episode = findEpisode({
         seasonId,
         episodeId,
         show: showData
@@ -97,8 +99,8 @@ export const onProgress = function(progress: any) {
         setEpisodeWatched.call(this, true);
         this.setState({ updatedWatchingStatus: true });
     }
-    if (duration - progress.currentTime <= 15 && !nextEpisodePoppedUp) {
-        const { episode: nextEpisode } = seasonId && episodeId && findNextEpisode({
+    if (duration - progress.currentTime <= NEXT_EPISODE_POPUP_STOPWATCH && !nextEpisodePoppedUp) {
+        const { episode: nextEpisode } = findNextEpisode({
             seasonId,
             episodeId,
             show: showData
@@ -117,7 +119,7 @@ export const onProgress = function(progress: any) {
         }
         this.setState({ nextEpisodePoppedUp: true });
     } else if (
-        duration - progress.currentTime > 15 &&
+        duration - progress.currentTime > NEXT_EPISODE_POPUP_STOPWATCH &&
         nextEpisodePoppedUp
     ) {
         popoverRef.current.dismissPopup();
