@@ -5,6 +5,8 @@ import KeyMappings from "./KeyMappings";
 
 export default class FirestickKeys extends Component {
   timer = undefined;
+  doubleTapTimer = undefined;
+  doubleTapKey = undefined;
 
   throttle(callback, wait, immediate = false) {
     this.timer = null;
@@ -63,7 +65,13 @@ export default class FirestickKeys extends Component {
       "onKeyUp",
       ({ keyCode = 0 }) => {
         if (mappedProps && mappedProps[keyCode]) {
-          mappedProps[keyCode].action();
+          mappedProps[keyCode].action({doublePress: this.doubleTapKey === keyCode});
+          this.doubleTapKey = keyCode
+          if (this.doubleTapKey === keyCode) {
+            this.doubleTapTimer = clearTimeout(this.doubleTapTimer);
+          } else {
+            this.doubleTapTimer = setTimeout(() => this.doubleTapKey = undefined, 100);
+          }
         }
         if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
           this.timer = clearTimeout(this.timer);
