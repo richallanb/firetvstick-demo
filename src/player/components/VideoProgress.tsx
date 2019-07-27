@@ -35,6 +35,7 @@ const VideoProgress = (props: VideoProps) => {
             width: `${widthPercentage > 0 ? widthPercentage : 0.1}%`
           }}
         />
+        {new Array(4).fill(0).map((_,i) => <View style={{...styles2.videoProgressLineEnd, left: `${(i +1)*(100/4)}%`, position: "absolute"}} />)}
         <View style={styles2.videoProgressLineEnd} />
         <View style={styles2.videoProgressBottomLayer} />
       </View>
