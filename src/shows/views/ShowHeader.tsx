@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Dimensions
 } from "react-native";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions, StackActions } from "react-navigation";
 import { debounce } from "lodash";
 import { DISPLAY_CONST, DATA_CONST } from "../../constants";
 import { StateContext } from "../context";
@@ -76,6 +76,14 @@ class ShowHeader extends Component<Props> {
       }
     };
 
+    const goToSettings = () => {
+      navigation.dispatch(
+        StackActions.push({
+          routeName: "Settings"
+        })
+      );
+    }
+
     const categoryView = () => {
       const categories = global
         .__provider()
@@ -104,6 +112,14 @@ class ShowHeader extends Component<Props> {
                 updateCategory(DATA_CONST.CATEGORIES.SEARCH_CATEGORY);
               }
             }}
+          />
+          <Category
+            preferredFocus={"settings" === category}
+            key={"settings"}
+            icon={"wrench"}
+            onFocus={onFocusDebounce}
+            onPress={goToSettings}
+            selected={"settings" === categorySelection}
           />
         </View>
       );
