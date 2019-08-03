@@ -10,10 +10,12 @@ interface Props {
   title?: string;
   selected?: boolean;
   icon?: string;
+  fontSize?:number;
+  style?: any;
 }
 
 const Category = (props: Props) => {
-  return <TextButton {...props} style={{ paddingRight: 100 }} fontSize={20} />;
+  return <TextButton style={{ ...props.style, paddingRight: 100 }} fontSize={20} {...props} />;
 };
 
 export default Category;

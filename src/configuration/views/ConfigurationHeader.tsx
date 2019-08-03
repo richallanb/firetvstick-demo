@@ -23,7 +23,7 @@ interface Props {
     navigation: any;
 }
 
-class ShowHeader extends Component<Props> {
+class ConfigurationHeader extends Component<Props> {
     static contextType = StateContext;
     public static defaultProps = {
         style: {}
@@ -31,7 +31,6 @@ class ShowHeader extends Component<Props> {
     categories = [{ title: "Main", value: "main" }];
     public render() {
         const [state, dispatch] = this.context;
-        const { selectedShow } = state;
         const { navigation } = this.props;
         const { category } = state;
 
@@ -123,7 +122,4 @@ const mapStateToProps = state => ({
     shows: state.shows
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ShowHeader);
+export default ConfigurationHeader;

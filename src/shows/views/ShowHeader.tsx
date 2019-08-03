@@ -116,10 +116,11 @@ class ShowHeader extends Component<Props> {
           <Category
             preferredFocus={"settings" === category}
             key={"settings"}
-            icon={"wrench"}
+            icon={"sliders"}
             onFocus={onFocusDebounce}
             onPress={goToSettings}
             selected={"settings" === categorySelection}
+            style={{marginLeft: "auto"}}
           />
         </View>
       );

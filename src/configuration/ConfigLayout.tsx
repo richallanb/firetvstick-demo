@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { View, StyleSheet } from "react-native";
 import { NavigationEvents } from "react-navigation";
 import * as actions from "../redux-store/actions";
-import { ConfigurationHeader } from "./views";
+import { ConfigurationHeader, ConfigurationBody } from "./views";
 import { StateProvider } from "./context";
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const ShowsLayout = (props: Props) => {
-  const { navigation, reduxNavigation } = props;
+  const { navigation } = props;
   return (
     <View style={styles.container}>
       <StateProvider>
