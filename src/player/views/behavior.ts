@@ -46,6 +46,11 @@ const playNextEpisode = function() {
     }
 };
 
+export const onLoadStart = function() {
+    const [_, dispatch] = this.context;
+    dispatch(reactActions.setVideoLoading());
+}
+
 export const onLoad = function({ duration, naturalSize }) {
     const {
         seasonId,
@@ -55,6 +60,8 @@ export const onLoad = function({ duration, naturalSize }) {
         popoverRef
     } = this.props;
     const [_, dispatch] = this.context;
+
+    dispatch(reactActions.setVideoLoaded());
     const episode = findEpisode({
         seasonId,
         episodeId,

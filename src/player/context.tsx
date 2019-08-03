@@ -14,7 +14,8 @@ export const initialState = {
     duration: undefined,
     naturalSize: undefined,
     delta: 0,
-    finished: false
+    finished: false,
+    isFetching: false
   },
 };
 
@@ -62,6 +63,24 @@ export const reducer = (state, action) => {
         video: {
           ...state.video,
           finished: action.payload
+        }
+      }
+    }
+    case "VIDEO_LOADING": {
+      return  {
+        ...state,
+        video: {
+          ...state.video,
+          isFetching: true
+        }
+      }
+    }
+    case "VIDEO_LOADED": {
+      return  {
+        ...state,
+        video: {
+          ...state.video,
+          isFetching: false
         }
       }
     }
