@@ -21,7 +21,7 @@ export default class DefaultSettingsController extends Settings {
   }
 
   getDefaultSettings() {
-    return { quality: 1080 };
+    return { quality: 5000000 };
   }
 
   async addBookmark(show: Show): Promise<{ [id: string]: Show }> {

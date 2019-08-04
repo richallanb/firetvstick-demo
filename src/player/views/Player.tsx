@@ -14,6 +14,9 @@ interface Props {
   shows: {
     showData: Show;
   };
+  settings: {
+    quality: number
+  },
   navigation: any;
   showId: string;
   seasonId: string;
@@ -48,7 +51,10 @@ class Player extends Component<Props, State> {
     } = state;
     const {
       uri,
-      innerRef
+      innerRef,
+      settings: {
+        quality
+      }
     } = this.props;
 
     return (
@@ -62,6 +68,7 @@ class Player extends Component<Props, State> {
         style={styles.backgroundVideo}
         paused={paused}
         ref={innerRef}
+        maxBitRate={quality}
         {...mapValues(behavior, fn => fn.bind(this))}
       />
     );
@@ -89,7 +96,8 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = state => ({
-  shows: state.shows
+  shows: state.shows,
+  settings: state.settings
 });
 
 export default connect(

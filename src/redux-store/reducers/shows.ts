@@ -1,5 +1,5 @@
-import { createReducer } from "../redux-utils";
-
+import { createReducer } from "../../redux-utils";
+import {set} from 'lodash';
 import {
   FETCHED_SHOW_DATA,
   FETCH_SHOW_DATA,
@@ -8,7 +8,7 @@ import {
   FETCHED_SEARCH_SHOW_DATA,
   FETCH_SEASON_DATA,
   FETCH_SOURCE_DATA
-} from "./actionTypes";
+} from "../actionTypes";
 import { StackActions, NavigationActions } from "react-navigation";
 
 const fetchedShowData = (state, action) => ({
@@ -80,6 +80,7 @@ export default createReducer(
     data: {},
     showData: {},
     searchData: {},
+    settings: {},
     isFetching: false
   },
   {

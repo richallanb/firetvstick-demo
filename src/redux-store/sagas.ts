@@ -1,11 +1,18 @@
-import { put, takeLeading, select } from "redux-saga/effects";
+import { put, takeLeading, select, takeLatest } from "redux-saga/effects";
+import { set } from 'lodash';
 import {
   FETCH_SHOW_DATA,
   FETCH_SEASON_DATA,
   FETCH_SEARCH_SHOW_DATA,
-  FETCH_SOURCE_DATA
+  FETCH_SOURCE_DATA,
+  SET_OPTION
 } from "./actionTypes";
-import { updateShowData, fetchedShowData, searchedShowData } from "./actions";
+import { 
+  updateShowData, 
+  fetchedShowData, 
+  searchedShowData, 
+  initializeSettings 
+} from "./actions";
 import { AnyAction } from "redux";
 import { NavigationActions } from "react-navigation";
 import { DATA_CONST } from "../constants";
@@ -44,6 +51,17 @@ function* fetchSourceData({
   yield put(updateShowData({ showId, data }));
 }
 
+function* updateSettings({ payload: { path, value } }: AnyAction) {
+  const {settings} = yield select();
+  const updatedSettings = set(settings, path, value);
+  yield global.__provider().getSettings().updateSettings(updatedSettings);
+}
+
+export function* autoStart() {
+  const settings = yield global.__provider().getSettings().getSettings();
+  yield put(initializeSettings(settings));
+};
+
 export function* fetchShowEpisodesAsync() {
   yield takeLeading(FETCH_SEASON_DATA, fetchSeasonData);
 }
@@ -64,4 +82,8 @@ export function* fetchSearchDataAsync() {
 
 export function* fetchSourceDataAsync() {
   yield takeLeading(FETCH_SOURCE_DATA, fetchSourceData);
+}
+
+export function* updateSettingsAsync() {
+  yield takeLatest(SET_OPTION, updateSettings)
 }

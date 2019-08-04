@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { CheckBox } from "react-native-elements";
 import { Button } from '../../components';
+import {isEqual} from 'lodash';
 
 class ButtonWrapper extends Component<any>{
     render() {
@@ -12,14 +13,14 @@ class ButtonWrapper extends Component<any>{
 
 type Option = {
     title: string,
-    value: string
+    value: any
 }
 
 interface Props {
     title?: string,
     options: Option[],
-    choice?: string,
-    onPress?: (choice: string) => void
+    choice?: any,
+    onPress?: (choice: any) => void
 }
 
 class Choices extends Component<Props> {
@@ -31,7 +32,7 @@ class Choices extends Component<Props> {
             title={option.title}
             checkedIcon='dot-circle-o'
             uncheckedIcon='circle-o'
-            checked={option.value === choice}
+            checked={isEqual(option.value, choice)}
             containerStyle={styles.checkBoxConainer}
             textStyle={styles.checkBoxText}
             onPress={() => onPress(option.value)}

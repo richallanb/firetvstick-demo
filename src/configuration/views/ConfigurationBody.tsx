@@ -1,33 +1,22 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, { Component } from "react";
 import { AnyAction } from "redux";
 import { connect } from "react-redux";
-import { StyleSheet, View, ScrollView, ActivityIndicator } from "react-native";
-import { StackActions } from "react-navigation";
-import { debounce } from "lodash";
-import { DISPLAY_CONST, DATA_CONST } from "../../constants";
+import * as actions from "../../redux-store/actions";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { StateContext } from "../context";
-import { CheckBox } from "react-native-elements";
 import Choices from "../options/Choices";
-import { setOption as setOptionAction } from '../context';
 
 interface Props {
-}
+    updateSettings(path:string, value:any): AnyAction;
+    settings: any;
+};
 
 class ConfigurationBody extends Component<Props> {
     static contextType = StateContext;
 
     render() {
-        const [state, dispatch] = this.context;
-        const { language, quality } = state;
-        const setOption = (...args) => dispatch(setOptionAction(...args));
+        const {updateSettings, settings} = this.props;
+        const { language, quality } = settings;
 
         return (
             <ScrollView
@@ -44,33 +33,22 @@ class ConfigurationBody extends Component<Props> {
                             { title: 'dubs', value: 'dubs' },
                             { title: 'subs', value: 'subs' }
                         ]}
-                        onPress={choice => setOption("language", choice)}
+                        onPress={choice => updateSettings("language", choice)}
                         choice={language}
                     />
                     <Choices
                         title="Quality"
                         choice={quality}
                         options={[
-                            { title: '1080p', value: '5000000' },
-                            { title: '720p', value: '2500000' },
-                            { title: '480p', value: '1250000' }
+                            { title: '1080p', value: 5000000 },
+                            { title: '720p', value: 2500000 },
+                            { title: '480p', value: 1250000 }
                         ]}
-                        onPress={choice => setOption("quality", choice)}
+                        onPress={choice => updateSettings("quality", choice)}
                     />
                 </View>
             </ScrollView>
         );
-    }
-
-    componentDidMount() {
-        const [_,dispatch] = this.context;
-        (async () => {
-            const settings = await global.__provider().getSettings().getSettings();
-            dispatch({
-                type: "INITIALIZE_OPTIONS",
-                payload: settings
-              });
-          })();
     }
 }
 
@@ -99,4 +77,15 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ConfigurationBody;
+const mapDispatchToProps = {
+    ...actions
+  };
+  
+  const mapStateToProps = state => ({
+    settings: state.settings
+  });
+  
+  export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ConfigurationBody);
