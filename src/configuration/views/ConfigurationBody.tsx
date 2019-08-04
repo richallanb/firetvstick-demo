@@ -16,10 +16,9 @@ import { DISPLAY_CONST, DATA_CONST } from "../../constants";
 import { StateContext } from "../context";
 import { CheckBox } from "react-native-elements";
 import Choices from "../options/Choices";
-import {setOption} from '../context';
+import { setOption as setOptionAction } from '../context';
 
 interface Props {
-    navigation: any;
 }
 
 class ConfigurationBody extends Component<Props> {
@@ -27,7 +26,8 @@ class ConfigurationBody extends Component<Props> {
 
     render() {
         const [state, dispatch] = this.context;
-        const { navigation } = this.props;
+        const { language, quality } = state;
+        const setOption = (...args) => dispatch(setOptionAction(...args));
 
         return (
             <ScrollView
@@ -39,15 +39,38 @@ class ConfigurationBody extends Component<Props> {
                     style={styles.container}
                 >
                     <Choices
+                        title="Language"
                         options={[
                             { title: 'dubs', value: 'dubs' },
                             { title: 'subs', value: 'subs' }
                         ]}
-                        onPress={() => { }}
+                        onPress={choice => setOption("language", choice)}
+                        choice={language}
+                    />
+                    <Choices
+                        title="Quality"
+                        choice={quality}
+                        options={[
+                            { title: '1080p', value: '5000000' },
+                            { title: '720p', value: '2500000' },
+                            { title: '480p', value: '1250000' }
+                        ]}
+                        onPress={choice => setOption("quality", choice)}
                     />
                 </View>
             </ScrollView>
         );
+    }
+
+    componentDidMount() {
+        const [_,dispatch] = this.context;
+        (async () => {
+            const settings = await global.__provider().getSettings().getSettings();
+            dispatch({
+                type: "INITIALIZE_OPTIONS",
+                payload: settings
+              });
+          })();
     }
 }
 

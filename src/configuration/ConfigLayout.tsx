@@ -23,7 +23,7 @@ const ShowsLayout = (props: Props) => {
         <ConfigurationHeader
           navigation={navigation}
         />
-        <ConfigurationBody navigation={navigation} />
+        <ConfigurationBody />
       </StateProvider>
     </View>
   );
