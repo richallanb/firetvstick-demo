@@ -62,14 +62,11 @@ class Player extends Component<Props, State> {
         source={{
           uri
         }}
-        bufferConfig={{
-          bufferForPlaybackMs: 500
-        }}
         style={styles.backgroundVideo}
         paused={paused}
         ref={innerRef}
         maxBitRate={quality}
-        {...mapValues(behavior, fn => fn.bind(this))}
+        {...mapValues(behavior, fn => typeof fn === 'function' ? fn.bind(this) : fn)}
       />
     );
   }

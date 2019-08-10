@@ -1,9 +1,11 @@
-
 import { StackActions } from "react-navigation";
 import * as reactActions from "../actions";
 import { findNextEpisode, findEpisode } from "../../show-utils";
 
 const NEXT_EPISODE_POPUP_STOPWATCH = 30
+const BUFFER_MS = 5000;
+
+// TODO: Add logic to switch to alternative source if buffering excessively
 
 const setEpisodeWatched = function(watched) {
     const { showId, seasonId, episodeId } = this.props;
@@ -35,6 +37,7 @@ const playNextEpisode = function() {
         episodeId,
         show: showData
     });
+
     if (nextEpisode && nextSeason) {
         fetchNextEpisode({ showId, seasonId, episodeId });
     } else {
@@ -48,6 +51,7 @@ const playNextEpisode = function() {
 
 export const onLoadStart = function() {
     const [_, dispatch] = this.context;
+    dispatch(reactActions.setBufferedCount(0));
     dispatch(reactActions.setVideoLoading());
 }
 
@@ -88,7 +92,7 @@ export const onLoad = function({ duration, naturalSize }) {
 export const onProgress = function(progress: any) {
     const [state, dispatch] = this.context;
     const {
-        video: { duration }
+        video: { duration, bufferedCount }
     } = state;
     const { updatedWatchingStatus, nextEpisodePoppedUp } = this.state;
     const {
@@ -98,9 +102,13 @@ export const onProgress = function(progress: any) {
         popoverRef
     } = this.props;
 
+    if (!progress.playableDuration) {
+        dispatch(reactActions.setBufferedCount(bufferedCount + 1));
+        console.log(bufferedCount + 1);
+    }
     dispatch(reactActions.setTimeProgress(progress.currentTime));
     if (
-        progress.currentTime / duration >= 0.9 &&
+        progress.currentTime / duration >= 0.8 &&
         !updatedWatchingStatus
     ) {
         setEpisodeWatched.call(this, true);
@@ -143,4 +151,8 @@ export const onEnd = function() {
     dispatch(reactActions.setVideoFinished(true));
     popoverRef.current.dismissPopup();
     playNextEpisode.call(this);
+};
+
+export const bufferConfig = {
+    bufferForPlaybackMs: BUFFER_MS
 };

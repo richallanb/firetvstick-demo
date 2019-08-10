@@ -32,7 +32,7 @@ class ConfigurationHeader extends Component<Props> {
     public render() {
         const [state, dispatch] = this.context;
         const { navigation } = this.props;
-        const { category } = state;
+        const { category = "main" } = state;
 
         const updateCategory = newCategory => {
             dispatch({

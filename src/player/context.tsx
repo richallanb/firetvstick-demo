@@ -15,7 +15,8 @@ export const initialState = {
     naturalSize: undefined,
     delta: 0,
     finished: false,
-    isFetching: false
+    isFetching: false,
+    bufferedCount: 0
   },
 };
 
@@ -81,6 +82,14 @@ export const reducer = (state, action) => {
         video: {
           ...state.video,
           isFetching: false
+        }
+      }
+    }
+    case "SET_BUFFERED_COUNT": {
+      return {
+        ...state,
+        video: {
+          bufferedCount: action.payload
         }
       }
     }

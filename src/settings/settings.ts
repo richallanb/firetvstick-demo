@@ -3,6 +3,8 @@ import { flow, omit, pick, set, get } from "lodash/fp";
 import AsyncStorage from "@react-native-community/async-storage";
 import Settings from "./settingsAbstract";
 
+// TODO: Write functions for storing position in an episode
+
 export default class DefaultSettingsController extends Settings {
   async getSettings(): Promise<any> {
     const settings = JSON.parse(await AsyncStorage.getItem("@settings")) || this.getDefaultSettings();

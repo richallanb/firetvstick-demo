@@ -43,3 +43,10 @@ export function setVideoLoaded() {
         type: "VIDEO_LOADED"
     };
 }
+
+export function setBufferedCount(bufferedCount) {
+    return {
+        type: "SET_BUFFERED_COUNT",
+        payload: bufferedCount
+    };
+}
