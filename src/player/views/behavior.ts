@@ -3,11 +3,11 @@ import * as reactActions from "../actions";
 import { findNextEpisode, findEpisode } from "../../show-utils";
 
 const NEXT_EPISODE_POPUP_STOPWATCH = 30
-const BUFFER_MS = 5000;
+const BUFFER_SEC = 5;
 
 // TODO: Add logic to switch to alternative source if buffering excessively
 
-const setEpisodeWatched = function(watched) {
+const setEpisodeWatched = function (watched) {
     const { showId, seasonId, episodeId } = this.props;
     (async () => {
         await global
@@ -22,7 +22,7 @@ const setEpisodeWatched = function(watched) {
     })();
 };
 
-const playNextEpisode = function() {
+const playNextEpisode = function () {
     const {
         showId,
         seasonId,
@@ -49,13 +49,13 @@ const playNextEpisode = function() {
     }
 };
 
-export const onLoadStart = function() {
+export const onLoadStart = function () {
     const [_, dispatch] = this.context;
     dispatch(reactActions.setBufferedCount(0));
     dispatch(reactActions.setVideoLoading());
 }
 
-export const onLoad = function({ duration, naturalSize }) {
+export const onLoad = function ({ duration, naturalSize }) {
     const {
         seasonId,
         episodeId,
@@ -70,9 +70,10 @@ export const onLoad = function({ duration, naturalSize }) {
         seasonId,
         episodeId,
         show: showData
-      });
-      
+    });
+
     dispatch(reactActions.setVideoFinished(false));
+    console.log(duration);
     dispatch(reactActions.setVideoInfo({ duration, naturalSize }));
     setEpisodeWatched.call(this, false);
     popoverRef.current.displayPopup(
@@ -89,7 +90,7 @@ export const onLoad = function({ duration, naturalSize }) {
     );
 };
 
-export const onProgress = function(progress: any) {
+export const onProgress = function (progress: any) {
     const [state, dispatch] = this.context;
     const {
         video: { duration, bufferedCount }
@@ -102,9 +103,9 @@ export const onProgress = function(progress: any) {
         popoverRef
     } = this.props;
 
-    if (!progress.playableDuration) {
+    if (progress.playableDuration <= progress.currentTime && progress.currentTime > BUFFER_SEC) {
         dispatch(reactActions.setBufferedCount(bufferedCount + 1));
-        console.log(bufferedCount + 1);
+        console.log(bufferedCount + 1, progress.currentTime, progress.playableDuration);
     }
     dispatch(reactActions.setTimeProgress(progress.currentTime));
     if (
@@ -142,7 +143,7 @@ export const onProgress = function(progress: any) {
     }
 };
 
-export const onEnd = function() {
+export const onEnd = function () {
     const [_, dispatch] = this.context;
     const {
         popoverRef
@@ -153,6 +154,10 @@ export const onEnd = function() {
     playNextEpisode.call(this);
 };
 
+export const onBandwidthUpdate = function ({ bitrate }) {
+    console.log(bitrate);
+}
+
 export const bufferConfig = {
-    bufferForPlaybackMs: BUFFER_MS
+    bufferForPlaybackMs: BUFFER_SEC * 1000
 };

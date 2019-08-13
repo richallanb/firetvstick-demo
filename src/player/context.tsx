@@ -89,6 +89,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         video: {
+          ...state.video,
           bufferedCount: action.payload
         }
       }
