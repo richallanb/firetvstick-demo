@@ -31,6 +31,12 @@ interface Props {
     seasonId: string;
     episodeId: string;
   }): AnyAction;
+  fetchSourceData(target: {
+    showId: string;
+    seasonId: number;
+    episodeId: number;
+    stalledSourceId?: number;
+  }): AnyAction;
 }
 
 interface State {
@@ -66,7 +72,6 @@ class Player extends Component<Props, State> {
         paused={paused}
         ref={innerRef}
         maxBitRate={quality}
-        reportBandwidth
         {...mapValues(behavior, fn => typeof fn === 'function' ? fn.bind(this) : fn)}
       />
     );

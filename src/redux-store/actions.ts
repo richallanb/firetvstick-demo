@@ -118,11 +118,12 @@ export function fetchSourceData(target: {
   showId: string;
   seasonId: number;
   episodeId: number;
-}): Action<{ showId: string; seasonId: number; episodeId: number }> {
-  const { showId, seasonId, episodeId } = target;
+  stalledSourceId?: number;
+}): Action<{ showId: string; seasonId: number; episodeId: number; stalledSourceId?: number }> {
+  const { showId, seasonId, episodeId, stalledSourceId } = target;
   return {
     type: FETCH_SOURCE_DATA,
-    payload: { showId, seasonId, episodeId }
+    payload: { showId, seasonId, episodeId, stalledSourceId }
   };
 }
 

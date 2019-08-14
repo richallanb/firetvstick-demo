@@ -36,11 +36,11 @@ function* fetchSearchData({ payload: { query } }: AnyAction) {
 }
 
 function* fetchSourceData({
-  payload: { showId, seasonId, episodeId }
+  payload: { showId, seasonId, episodeId, stalledSourceId }
 }: AnyAction) {
   const { data, source } = <{ data: Show, source: Source }>(yield global
     .__provider()
-    .fetchSources({ showId, seasonId, episodeId }));
+    .fetchSources({ showId, seasonId, episodeId, badSourceId: stalledSourceId }));
   yield put(
     NavigationActions.navigate({
       routeName: "Player",
