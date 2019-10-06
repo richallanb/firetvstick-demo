@@ -1,20 +1,29 @@
 import React, { Component } from "react";
-import { Text } from 'react-native';
+import * as actions from "../../redux-store/actions";
+import { connect } from "react-redux";
+import { AnyAction } from "redux";
 import { FirestickKeys } from "../../components";
 import { StateContext } from "../context";
-import { Episode, Source } from "src/types";
+import { Episode, Source, Show } from "../../types";
 import { PlayerPopover } from "../views";
 import * as behavior from './behavior';
 import {mapValues} from 'lodash';
 
 interface Props {
   popoverRef: React.RefObject<PlayerPopover>;
+  episodeId: any;
+  seasonId: any;
   episode: Episode;
   source: Source;
   playerRef: any;
+  shows?: {
+    isFetching: boolean;
+    showData: Show;
+    data: Show [];
+  };
 }
 
-export default class RemoteInput extends Component<Props> {
+class RemoteInput extends Component<Props> {
   static contextType = StateContext;
 
   render() {
@@ -26,3 +35,17 @@ export default class RemoteInput extends Component<Props> {
     );
   }
 }
+
+const mapDispatchToProps = {
+  ...actions
+};
+
+const mapStateToProps = state => ({
+  shows: state.shows,
+  settings: state.settings
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RemoteInput);

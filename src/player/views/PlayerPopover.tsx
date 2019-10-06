@@ -13,7 +13,11 @@ interface State {
     visible: boolean;
     icon?: string;
     text?: string;
-    videoInfo?: any;
+    videoInfo?: any,
+    episodeSelector?: {
+      episodes: Episode [],
+      currentEpisodeIndex: number
+    }
   };
   episodePopup: {
     visible: boolean;
@@ -31,7 +35,8 @@ class PlayerPopover extends Component<Props, State> {
       visible: false,
       icon: undefined,
       text: undefined,
-      videoInfo: undefined
+      videoInfo: undefined,
+      episodeSelector: undefined
     },
     episodePopup: {
       visible: false,
@@ -45,7 +50,15 @@ class PlayerPopover extends Component<Props, State> {
 
   displayPopup(
     value: {
-      lowerPopup?: { icon?: string; text?: string, videoInfo?: any };
+      lowerPopup?: { 
+        icon?: string; 
+        text?: string; 
+        videoInfo?: any;
+        episodeSelector?: {
+          episodes: Episode [],
+          currentEpisodeIndex: number
+        };
+      };
       episodePopup?: {
         episode: Episode;
         topText?: string;
@@ -108,24 +121,28 @@ class PlayerPopover extends Component<Props, State> {
 
   // TODO: Add popover for list of episodes and ability to pick them
   render() {
+    const {lowerPopup, episodePopup, anim} = this.state;
     return (
       <View style={styles.container}>
-        {this.state.lowerPopup.visible ? (
+        {lowerPopup.visible ? (
           <VideoProgressPopup
-            icon={this.state.lowerPopup.icon}
-            text={this.state.lowerPopup.text}
-            info={this.state.lowerPopup.videoInfo}
-            opacity={this.state.anim}
+            icon={lowerPopup.icon}
+            text={lowerPopup.text}
+            info={lowerPopup.videoInfo}
+            opacity={anim}
+            episodeSelector={!!lowerPopup.episodeSelector}
+            episodes={lowerPopup.episodeSelector && lowerPopup.episodeSelector.episodes}
+            currentEpisode={lowerPopup.episodeSelector && lowerPopup.episodeSelector.currentEpisodeIndex}
           />
         ) : (
           <View />
         )}
-        {this.state.episodePopup.visible ? (
+        {episodePopup.visible ? (
           <VideoNextEpisodePopup
-            episode={this.state.episodePopup.episode}
-            topText={this.state.episodePopup.topText}
-            showTimeLeft={this.state.episodePopup.showTimeLeft}
-            opacity={this.state.anim}
+            episode={episodePopup.episode}
+            topText={episodePopup.topText}
+            showTimeLeft={episodePopup.showTimeLeft}
+            opacity={anim}
           />
         ) : (
           <View />

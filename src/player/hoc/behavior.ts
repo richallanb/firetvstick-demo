@@ -1,15 +1,17 @@
 import KeepAwake from "react-native-keep-awake";
 import { prettyTime } from "../utils";
 import * as reactActions from "../actions";
+import { Episode, Show, Season } from "../../types";
+import { findSeason, findEpisodeAndIndex } from '../../show-utils';
 
-export const onRight = function({doubleTap}) {
+export const onRight = function ({ doubleTap }) {
     const [state, dispatch] = this.context;
     let { playerRef, popoverRef } = this.props;
     let { video: { paused, progress, duration, delta } } = state;
 
     let forwardAmt = delta || 10;
     if (doubleTap) {
-        const timeSlices = new Array(4).fill(0).map((_,i) => (i+1) * (duration/4));
+        const timeSlices = new Array(4).fill(0).map((_, i) => (i + 1) * (duration / 4));
         const nearest = timeSlices.find(slice => slice > progress);
         forwardAmt = nearest - progress;
     }
@@ -27,7 +29,7 @@ export const onRight = function({doubleTap}) {
     dispatch(reactActions.setTimeDelta(0));
 };
 
-export const onRightHold = function() {
+export const onRightHold = function () {
     const [state, dispatch] = this.context;
     let { popoverRef } = this.props;
     let { video: { progress, duration, delta } } = state;
@@ -49,14 +51,14 @@ export const onRightHold = function() {
     dispatch(reactActions.setTimeDelta(forwardAmt));
 };
 
-export const onLeft = function({doubleTap}) {
+export const onLeft = function ({ doubleTap }) {
     const [state, dispatch] = this.context
     let { playerRef, popoverRef } = this.props;
     let { video: { progress, delta, duration } } = state;
 
     let reverseAmt = delta || -10;
     if (doubleTap) {
-        const timeSlices = new Array(4).fill(0).map((_,i) => (i+1) * (duration/4));
+        const timeSlices = new Array(4).fill(0).map((_, i) => (i + 1) * (duration / 4));
         const nearest = timeSlices.reverse().find(slice => slice < (progress - 4)) || 0;
         reverseAmt = nearest - progress;
     }
@@ -74,7 +76,7 @@ export const onLeft = function({doubleTap}) {
     dispatch(reactActions.setTimeDelta(0));
 };
 
-export const onLeftHold = function() {
+export const onLeftHold = function () {
     const [state, dispatch] = this.context
     let { popoverRef } = this.props;
     let { video: { progress, delta } } = state;
@@ -96,7 +98,7 @@ export const onLeftHold = function() {
     dispatch(reactActions.setTimeDelta(reverseAmt));
 };
 
-export const onPlay = function() {
+export const onPlay = function () {
     const [state, dispatch] = this.context
     let { popoverRef, episode, source } = this.props;
     let { video: { paused, naturalSize } } = state;
@@ -125,7 +127,7 @@ export const onPlay = function() {
     dispatch(reactActions.togglePaused());
 };
 
-export const onSelect = function() {
+export const onSelect = function () {
     let { popoverRef, episode } = this.props;
     popoverRef.current.displayPopup(
         {
@@ -136,5 +138,22 @@ export const onSelect = function() {
         },
         true,
         5000
+    );
+};
+
+export const onDown = function () {
+    let { popoverRef, episodeId, seasonId, shows: { showData } } = this.props;
+    const season:Season = findSeason({ show: <Show>showData, seasonId });
+    const {index} = findEpisodeAndIndex({episodeId, seasonId, season});
+    popoverRef.current.displayPopup(
+        {
+            lowerPopup: {
+                episodeSelector: {
+                    episodes: season.episodes,
+                    currentEpisodeIndex: index
+                }
+            }
+        },
+        false
     );
 };

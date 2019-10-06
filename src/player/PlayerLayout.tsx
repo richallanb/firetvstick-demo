@@ -72,6 +72,8 @@ class PlayerLayout extends Component<Props> {
             playerRef={this.playerRef}
             episode={episode}
             source={source}
+            episodeId={episodeId}
+            seasonId={seasonId}
           />
         </StateProvider>
       </View>

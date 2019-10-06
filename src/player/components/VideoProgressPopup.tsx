@@ -1,15 +1,19 @@
 import React, { Component } from "react";
-import { Animated, View, Text, StyleSheet, Dimensions } from "react-native";
+import { Animated, FlatList, View, Text, StyleSheet, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import VideoProgress from "./VideoProgress";
 import { StateContext } from "../context";
 import LinearGradient from "react-native-linear-gradient";
+import { Episode } from "../../types";
 
 interface VideoPopupProps {
   icon: string;
   text: string;
   info: string;
   opacity: number | Animated.Value;
+  episodeSelector: boolean;
+  episodes: Episode[];
+  currentEpisode: number;
 }
 const test = {
   "description": "Rimuru and his Goblin riders set out for the marshlands to finalize their alliance with the Lizardmen. On the way, they save a Lizardman who'd been attacked by the Orcs. The victim turns out to be Gabiru's younger sister, who reveals that Gabiru led an insurrection and left to fight the Orc Lord without waiting for the alliance. She also pleads with Rimuru to save Gabiru and the rest of her clan. Meanwhile, Gabiru faces the massive Orc army and is shocked when he witnesses the power of their unique skill, Starved.",
@@ -23,14 +27,14 @@ class VideoProgressPopup extends Component<VideoPopupProps> {
   static contextType = StateContext;
   render() {
     const [state] = this.context;
-    const { icon, text, opacity = 0, info } = this.props;
+    const { icon, text, opacity = 0, info, episodeSelector, episodes, currentEpisode } = this.props;
     const {
       video: { progress, duration, delta }
     } = state;
     const currentTime = progress + delta;
     return (
       <View style={styles.statusContainer}>
-        <Animated.View style={{ ...styles.bottomContainer, opacity }}>
+        <Animated.View style={{ ...styles.bottomContainer, opacity, height: episodeSelector ? 125 : 60 }}>
           <LinearGradient colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.5)", "rgba(0,0,0,0.9)"]}
             locations={[0, 0.35, 1]}
             style={styles.gradientContainer}>
@@ -44,6 +48,24 @@ class VideoProgressPopup extends Component<VideoPopupProps> {
               {text ? <Text style={styles.statusText}>{text}</Text> : <View />}
             </View>
             {info ? <View style={styles.infoContainer}><Icon name="stream" style={styles.infoIcon} /><Text style={styles.infoText}>{info}</Text></View> : <View />}
+            {episodeSelector ?
+              <View>
+                <FlatList
+                  horizontal
+                  data={episodes}
+                  removeClippedSubviews={false}
+                  initialScrollIndex={currentEpisode}
+                  renderItem={e => {
+                    const episode: Episode = e.item;
+                    return (
+                      <Text key={episode.id}>{episode.name}</Text>
+                    );
+                  }
+                  }
+                  maxToRenderPerBatch={80}
+                  numColumns={1}
+                />
+              </View> : <View />}
           </LinearGradient>
         </Animated.View>
       </View>
