@@ -5,6 +5,8 @@ import { findNextEpisode, findEpisode } from "../../show-utils";
 
 const NEXT_EPISODE_POPUP_STOPWATCH = 30;
 const BUFFER_MS = 5000;
+const COMPLETION_THRESHOLD = 0.8;
+const STORE_POSITION_THRESHOLD = 10;
 /*
  * If the buffer takes longer than we've got for video to watch,
  * then the video is stalled (bad source or bad internet)
@@ -128,11 +130,11 @@ export const onProgress = function (progress: any) {
     } = this.props;
 
     dispatch(reactActions.setTimeProgress(progress.currentTime));
-    if (progress.currentTime / duration >= 0.8 && !updatedWatchingStatus) {
+    if (progress.currentTime / duration >= COMPLETION_THRESHOLD && !updatedWatchingStatus) {
         setEpisodeWatched.call(this, true);
         updateEpisodeCurrentPosition.call(this, 0);
         this.setState({ updatedWatchingStatus: true });
-    } else {
+    } else if (progress.currentTime > STORE_POSITION_THRESHOLD) {
         updateEpisodeCurrentPosition.call(this, progress.currentTime / duration);
     }
     if (

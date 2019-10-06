@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ActivityIndicator, StyleSheet, Dimensions } from "react-native";
+import { Text, View, ActivityIndicator, StyleSheet, Dimensions } from "react-native";
 import { connect } from "react-redux";
 import { useStateValue } from "../context";
 
@@ -7,7 +7,7 @@ const winSize = Dimensions.get("window");
 const LoadingBackground = () => {
   const [state] = useStateValue();
   const {
-    video: { isFetching }
+    video: { isFetching, fetchMessage }
   } = state;
   if (!isFetching) {
     return <View />;
@@ -19,6 +19,7 @@ const LoadingBackground = () => {
         size="large"
         color="#ff9900"
       />
+      <Text>{fetchMessage}</Text>
     </View>
   );
 };
@@ -30,7 +31,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    zIndex: 999999
+    zIndex: 999999,
+    backgroundColor: 'rgb(0,0,0)'
   },
   loadingIndicator: {
     position: "absolute",

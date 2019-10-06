@@ -59,13 +59,16 @@ export default class FirestickKeys extends Component {
   }
 
   _enableEventHandler = () => {
-    const { doubleTapTimeout } = this.props;
+    const { doubleTapTimeout, stopCapture } = this.props;
     const mappedProps = this.buildProps();
     let throttledKeyDown;
     let doubleTapKey;
     this.listenerKeyUp = DeviceEventEmitter.addListener(
       "onKeyUp",
       ({ keyCode = 0 }) => {
+        if (stopCapture)
+          return;
+        
         if (mappedProps && mappedProps[keyCode]) {
           mappedProps[keyCode].action({ doubleTap: doubleTapKey === keyCode });
           doubleTapKey = keyCode
@@ -83,6 +86,9 @@ export default class FirestickKeys extends Component {
     this.listenerKeyDown = DeviceEventEmitter.addListener(
       "onKeyDown",
       ({ keyCode = 0 }) => {
+        if (stopCapture)
+          return;
+
         const heldKeyCode = `${keyCode}_hold`;
         if (mappedProps && mappedProps[heldKeyCode]) {
           if (throttledKeyDown && throttledKeyDown.keyCode === keyCode) {
@@ -120,5 +126,6 @@ export default class FirestickKeys extends Component {
 
 FirestickKeys.defaultProps = {
   keyPressTimeOut: 100,
-  doubleTapTimeout: 200
+  doubleTapTimeout: 200,
+  stopCapture: false
 };

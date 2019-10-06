@@ -1,5 +1,5 @@
 import { createReducer } from "../../redux-utils";
-import {set} from 'lodash';
+import { set } from 'lodash';
 import {
   FETCHED_SHOW_DATA,
   FETCH_SHOW_DATA,
@@ -65,10 +65,18 @@ const navigatingToScreen = (state, payload) => {
   }
 }
 
-const isFetching = state => ({
-  ...state,
-  isFetching: true
-})
+const isFetching = (state, action) => {
+  const {stalledSourceId} = action.payload;
+  let fetchMessage = undefined;
+  if (stalledSourceId !== undefined)
+    fetchMessage = 'Source has stalled. Switching to alternate.'
+  
+  return {
+    ...state,
+    fetchMessage,
+    isFetching: true
+  };
+}
 
 const fetched = state => ({
   ...state,
@@ -81,7 +89,8 @@ export default createReducer(
     showData: {},
     searchData: {},
     settings: {},
-    isFetching: false
+    isFetching: false,
+    fetchMessage: undefined
   },
   {
     [FETCH_SHOW_DATA]: isFetchingShowsData,
