@@ -10,10 +10,8 @@ const STORE_POSITION_THRESHOLD = 10;
 /*
  * If the buffer takes longer than we've got for video to watch,
  * then the video is stalled (bad source or bad internet)
- * 250ms is added in the odd event that the video buffer is just barely keeping
- * up and it is watchable without being stalled.
  */
-const STALLED_MS = BUFFER_MS + 250;
+const STALLED_MS = BUFFER_MS * 2;
 
 // TODO: Add logic to check that an alternative source exists before requesting a new one
 
@@ -75,11 +73,16 @@ const playNextEpisode = function () {
 };
 
 export const onLoadStart = function () {
-    const [_, dispatch] = this.context;
-    dispatch(reactActions.setVideoLoading());
+    const [state, dispatch] = this.context;
+    const {video:{isFetching}} = state;
+    console.log('load start');
+    if (!isFetching) {
+      dispatch(reactActions.setVideoLoading());
+    }
 };
 
 export const onLoad = function ({ duration, naturalSize }) {
+    console.log('on load');
     const {
         seasonId,
         episodeId,
@@ -119,7 +122,7 @@ export const onLoad = function ({ duration, naturalSize }) {
 export const onProgress = function (progress: any) {
     const [state, dispatch] = this.context;
     const {
-        video: { duration }
+        video: { duration, stalledSource }
     } = state;
     const { updatedWatchingStatus, nextEpisodePoppedUp } = this.state;
     const {
@@ -129,6 +132,11 @@ export const onProgress = function (progress: any) {
         popoverRef
     } = this.props;
 
+    if(stalledSource) {
+        dispatch(reactActions.clearStall());
+        dispatch(reactActions.setVideoLoaded());
+    }
+
     dispatch(reactActions.setTimeProgress(progress.currentTime));
     if (progress.currentTime / duration >= COMPLETION_THRESHOLD && !updatedWatchingStatus) {
         setEpisodeWatched.call(this, true);
@@ -137,6 +145,7 @@ export const onProgress = function (progress: any) {
     } else if (progress.currentTime > STORE_POSITION_THRESHOLD) {
         updateEpisodeCurrentPosition.call(this, progress.currentTime / duration);
     }
+
     if (
         duration - progress.currentTime <= NEXT_EPISODE_POPUP_STOPWATCH &&
         !nextEpisodePoppedUp
@@ -177,13 +186,21 @@ export const onEnd = function () {
     playNextEpisode.call(this);
 };
 
-const stalledAction = function () {
-    const [state] = this.context;
+const stalledAction = async function () {
+    const [state, dispatch] = this.context;
     const {
         video: { progress, duration }
     } = state;
+      const {autoResolveStalls} = await global
+        .__provider()
+        .getSettings()
+        .getSettings();
     const { fetchSourceData, showId, seasonId, episodeId, source } = this.props;
-    fetchSourceData({ showId, seasonId, episodeId, currentPosition: progress / duration, stalledSourceId: source.id });
+    if (!autoResolveStalls) {
+      dispatch(reactActions.stalledSource());
+    } else {
+      fetchSourceData({ showId, seasonId, episodeId, currentPosition: progress / duration, stalledSourceId: source.id });
+    }
     console.log("fuckin stalled bro");
 };
 

@@ -16,6 +16,7 @@ export const initialState = {
     delta: 0,
     finished: false,
     isFetching: false,
+    stalledSource: false,
     bufferedCount: 0
   },
 };
@@ -72,7 +73,8 @@ export const reducer = (state, action) => {
         ...state,
         video: {
           ...state.video,
-          isFetching: true
+          isFetching: true,
+          stalledSource: false
         }
       }
     }
@@ -81,7 +83,8 @@ export const reducer = (state, action) => {
         ...state,
         video: {
           ...state.video,
-          isFetching: false
+          isFetching: false,
+          stalledSource: false
         }
       }
     }
@@ -91,6 +94,25 @@ export const reducer = (state, action) => {
         video: {
           ...state.video,
           bufferedCount: action.payload
+        }
+      }
+    }
+    case "STALLED_SOURCE": {
+      return {
+        ...state,
+        video: {
+          ...state.video,
+          isFetching: true,
+          stalledSource: true
+        }
+      }
+    }
+    case "CLEAR_STALL": {
+      return {
+        ...state,
+        video: {
+          ...state.video,
+          stalledSource: false
         }
       }
     }

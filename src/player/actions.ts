@@ -50,3 +50,16 @@ export function setBufferedCount(bufferedCount) {
         payload: bufferedCount
     };
 }
+
+export function stalledSource() {
+    return {
+      type: "STALLED_SOURCE"
+    };
+}
+
+export function clearStall() {
+    return {
+      type: "CLEAR_STALL"
+    };
+}
+  

@@ -54,7 +54,13 @@ class PlayerLayout extends Component<Props> {
     return (
       <View style={styles.container}>
         <StateProvider>
-          <LoadingBackground />
+          <LoadingBackground
+            showId={showId}
+            seasonId={seasonId}
+            episodeId={episodeId}
+            episode={episode}
+            source={source}
+          />
           <Player
             showId={showId}
             seasonId={seasonId}

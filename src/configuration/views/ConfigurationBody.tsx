@@ -16,7 +16,7 @@ class ConfigurationBody extends Component<Props> {
 
     render() {
         const {updateSettings, settings} = this.props;
-        const { language, quality } = settings;
+        const { language, quality, autoResolveStalls } = settings;
 
         return (
             <ScrollView
@@ -45,6 +45,15 @@ class ConfigurationBody extends Component<Props> {
                             { title: '480p', value: 1250000 }
                         ]}
                         onPress={choice => updateSettings("quality", choice)}
+                    />
+                    <Choices
+                        title="Auto-Resolve Stalled Sources"
+                        choice={autoResolveStalls}
+                        options={[
+                            { title: 'Yes', value: true },
+                            { title: 'No', value: false }
+                        ]}
+                        onPress={choice => updateSettings("autoResolveStalls", choice)}
                     />
                 </View>
             </ScrollView>

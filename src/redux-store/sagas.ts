@@ -36,11 +36,11 @@ function* fetchSearchData({ payload: { query } }: AnyAction) {
 }
 
 function* fetchSourceData({
-  payload: { showId, seasonId, episodeId, stalledSourceId, currentPosition }
+  payload: { showId, seasonId, episodeId, stalledSourceId, currentPosition, sourceId }
 }: AnyAction) {
   const { data, source } = <{ data: Show, source: Source }>(yield global
     .__provider()
-    .fetchSources({ showId, seasonId, episodeId, badSourceId: stalledSourceId }));
+    .fetchSources({ showId, seasonId, episodeId, badSourceId: stalledSourceId, sourceId }));
   let lastKnownPosition;
   if (currentPosition) {
     lastKnownPosition = currentPosition;
